@@ -1,0 +1,22 @@
+{
+  "name": "cutiebot",
+  "version": "1.0.0",
+  "description": "Cutie Club Discord Server Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amberstarlight/cutiebot.git"
+  },
+  "author": "Amber Holly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amberstarlight/cutiebot/issues"
+  },
+  "homepage": "https://github.com/amberstarlight/cutiebot#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1"
+  }
+}
