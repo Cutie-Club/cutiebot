@@ -14,22 +14,26 @@ for (const file of commandFiles) {
 
 const cooldowns = new Discord.Collection();
 
+// on ready
 client.once('ready', () => {
 	console.log('Ready!');
 });
 
+// when a user joins
 client.on('guildMemberAdd', member => {
   const welcomeChannel = member.guild.channels.find(channel => channel.name === 'general');
   if (!welcomeChannel) return;
   welcomeChannel.send(`**${member.user.username} has joined the server. Henlo new fren!** :wave::skin-tone-1:`);
 });
 
+// when a user leaves
 client.on('guildMemberRemove', member => {
   const welcomeChannel = member.guild.channels.find(channel => channel.name === 'general');
   if (!welcomeChannel) return;
   welcomeChannel.send(`**${member.user.username} has left the server.** 💔`);
 });
 
+// message handler
 client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -79,7 +83,7 @@ client.on('message', message => {
 		command.execute(message, args);
 	} catch (error) {
 		console.error(error);
-		message.channel.send('💔 **There was an error trying to execute that command!**');
+		message.channel.send('💔 **I couldn\'t execute that command. Maybe ask for help?**');
 	}
 });
 
