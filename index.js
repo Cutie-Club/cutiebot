@@ -72,7 +72,10 @@ client.on('message', message => {
 
 		if (now < expirationTime) {
 			const timeLeft = (expirationTime - now) / 1000;
-			return message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`);
+			return message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`)
+				.then(msg => {
+	        msg.delete(5000);
+	      });
 		}
 	}
 
