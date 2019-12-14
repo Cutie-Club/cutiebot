@@ -23,7 +23,7 @@ client.once('ready', () => {
 client.on('guildMemberAdd', member => {
   const welcomeChannel = member.guild.channels.find(channel => channel.name === 'general');
   if (!welcomeChannel) return;
-  welcomeChannel.send(`**${member.user.username} has joined the server. Henlo new fren!** :wave::skin-tone-1:`);
+  welcomeChannel.send(`**${member.user.username} has joined the server. Henlo new fren!** :wave_tone1:`);
 });
 
 // when a user leaves
