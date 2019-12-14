@@ -7,7 +7,7 @@ module.exports = {
 	guildOnly: true,
 	execute(message, args) {
 		const titleCase = (str) => str.replace(/\b\S/g, t => t.toUpperCase());
-  	const role = message.guild.roles.find(r => r.name === (titleCase(args.join(" ").toLowerCase())));
+  		const role = message.guild.roles.find(r => r.name === (titleCase(args.join(" ").toLowerCase())));
 		var blacklist = ['Admin', 'Cutiebot', 'Nitro Booster'];
 
 		if (!args[0]) {
