@@ -1,4 +1,5 @@
 {
 	"prefix": "!",
-	"token": "YOUR-TOKEN-HERE"
+	"token": "YOUR-TOKEN-HERE",
+	"roleBlacklist": ["Admin", "Cutiebot", "Nitro Booster"]
 }
