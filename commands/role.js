@@ -3,7 +3,7 @@ const { roleBlacklist } = require('../config.json');
 module.exports = {
 	name: 'role',
 	description: 'Adds (or removes) a role from a user.',
-	aliases: ['roles'],
+	aliases: [],
 	usage: '[role name]',
 	cooldown: 5,
 	guildOnly: true,
