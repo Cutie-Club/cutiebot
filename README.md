@@ -19,13 +19,14 @@ git clone https://github.com/amberstarlight/cutiebot.git
 
 Once finished, run `cd cutiebot`, followed by `npm install`.
 
-To start the bot, run `node index.js`. If you are testing, use [nodemon](https://nodemon.io/) to streamline development.
+To start the bot, run `node index.js`.
+Optionally, run `npm run dev:start` to run the bot under `nodemon` for development.
 
 ## Inviting to a Server
 
 To add the bot to a server, generate an OAuth2 invite URL on your application's OAuth2 page, on the Discord Developer Portal.
 
-You can select as many permissions as you requre for testing, but the following permissions are given for the production bot;
+You can select as many permissions as you require for testing, but the following permissions are given for the production bot;
 
 Manage Roles  
 Kick Members  
