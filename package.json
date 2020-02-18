@@ -4,7 +4,8 @@
   "description": "Cutie Club Discord Server Bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint ."
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,8 @@
   "homepage": "https://github.com/amberstarlight/cutiebot#readme",
   "dependencies": {
     "discord.js": "^11.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0"
   }
 }

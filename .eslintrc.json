@@ -1,0 +1,16 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "indent": ["error", "tab"],
+    "no-console": "off",
+    "no-var": "error",
+    "object-curly-spacing": ["error", "always"]
+  }
+}
