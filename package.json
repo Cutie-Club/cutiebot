@@ -1,6 +1,6 @@
 {
   "name": "cutiebot",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Cutie Club Discord Server Bot",
   "main": "index.js",
   "scripts": {
