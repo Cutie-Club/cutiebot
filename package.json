@@ -1,10 +1,12 @@
 {
   "name": "cutiebot",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Cutie Club Discord Server Bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "dev:start": "nodemon index.js -V"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,9 @@
   "homepage": "https://github.com/amberstarlight/cutiebot#readme",
   "dependencies": {
     "discord.js": "^11.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "nodemon": "^2.0.2"
   }
 }

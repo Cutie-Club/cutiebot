@@ -24,9 +24,9 @@ module.exports = {
 		});
 
 		message.channel.send(`💖 **Deleted ${amount - 1} message(s).** 🔥`)
-      .then(msg => {
-        msg.delete(5000);
-      });
+			.then(msg => {
+				msg.delete(5000);
+			});
 
 	},
 };
