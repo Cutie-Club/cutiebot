@@ -7,9 +7,11 @@
   "parserOptions": {
     "ecmaVersion": 2020
   },
+  "ignorePatterns": ["node_modules/"],
   "rules": {
     "indent": ["error", "tab"],
     "no-console": "off",
+		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-var": "error",
     "object-curly-spacing": ["error", "always"]
   }
