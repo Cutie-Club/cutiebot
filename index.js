@@ -22,25 +22,25 @@ process.on("unhandledRejection", error =>
 
 // on ready
 client.once("ready", () => {
-	console.log("Ready!");
+	console.log(`Started at ${new Date().toUTCString()}`);
+});
+
+client.on("debug", info => {
+	console.log(`debug -> ${info}`);
 });
 
 // when a user joins
 client.on("guildMemberAdd", member => {
-	const welcomeChannel = member.guild.channels.find(
-		channel => channel.name === "general"
-	);
+	const welcomeChannel = member.guild.channels.find(channel => channel.name === "general");
 	if (!welcomeChannel) return;
 	welcomeChannel.send(
-		`**${member.user.username} has joined the server. Henlo new fren!** :wave_tone1:`
+		`**${member.user.username} has joined the server. Henlo new fren!** 👋🏻`
 	);
 });
 
 // when a user leaves
 client.on("guildMemberRemove", member => {
-	const welcomeChannel = member.guild.channels.find(
-		channel => channel.name === "general"
-	);
+	const welcomeChannel = member.guild.channels.find(channel => channel.name === "general");
 	if (!welcomeChannel) return;
 	welcomeChannel.send(`**${member.user.username} has left the server.** 💔`);
 });
@@ -55,22 +55,20 @@ client.on("message", message => {
 	const command =
     client.commands.get(commandName) ||
     client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-		
+
 	if (!command) return;
 
 	if (command.guildOnly && message.channel.type !== "text") {
 		return message.channel.send(
-			":broken_heart: **We can't do that here. Try it on the server instead!**"
+			"💔 **We can't do that here. Try it on the server instead!**"
 		);
 	}
 
 	if (command.args && !args.length) {
-		let reply = `❣ **You didn't provide any arguments!**`;
-
+		let reply = `❣ **This command needs some arguments.**`;
 		if (command.usage) {
-			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+			reply += `\nTo use it, type: \`${prefix}${command.name} ${command.usage}\``;
 		}
-
 		return message.channel.send(reply);
 	}
 
@@ -89,12 +87,10 @@ client.on("message", message => {
 			const timeLeft = (expirationTime - now) / 1000;
 			return message.channel
 				.send(
-					`❣ **Please wait ${timeLeft.toFixed(
-						1
-					)} more second(s) before reusing the \`${command.name}\` command.**`
+					`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`
 				)
 				.then(msg => {
-					msg.delete(5000);
+					msg.delete(3000);
 				});
 		}
 	}
