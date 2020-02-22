@@ -47,4 +47,4 @@ Here's an OAuth2 link with these permissions set; https://discordapp.com/api/oau
 
 ## Contributing
 
-If you would like to open a PR, please check [the contributing guide](https://github.com/amberstarlight/cutiebot/blob/master/README.md).
+If you would like to open a PR, please check [the contributing guide](https://github.com/amberstarlight/cutiebot/blob/master/CONTRIBUTING.md).
