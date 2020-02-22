@@ -28,21 +28,23 @@ To add the bot to a server, generate an OAuth2 invite URL on your application's 
 
 You can select as many permissions as you require for testing, but the following permissions are given for the production bot;
 
-Manage Roles  
-Kick Members  
-Ban Members  
-View Channels  
-Send Messages  
-Manage Messages  
-Embed Links  
-Attach Files  
-Read Message History  
-Add Reactions
+```diff
++ Manage Roles  
++ Kick Members  
++ Ban Members  
++ View Channels  
++ Send Messages  
++ Manage Messages  
++ Embed Links  
++ Attach Files  
++ Read Message History  
++ Add Reactions
+```
 
 Here's an OAuth2 link with these permissions set; https://discordapp.com/api/oauth2/authorize?client_id=633716546568585216&permissions=268561478&scope=bot
 
-(You will need Administrator permissions on the server you wish to add Cutiebot to!)
+(Please note that you *will* need the `Administrator` permission on the server you wish to add Cutiebot to!)
 
 ## Contributing
 
-Please read the [Discord.js documentation](https://discord.js.org)! If you are not used to developer documentation, this may be daunting at first, but may have the answers you are looking for.
+If you would like to open a PR, please check [the contributing guide](https://github.com/amberstarlight/cutiebot/blob/master/README.md).

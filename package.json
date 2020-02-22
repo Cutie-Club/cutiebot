@@ -12,7 +12,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
-    "dev:start": "nodemon index.js -V",
+    "dev:start": "nodemon index.js",
     "prod:start": "pm2 start index.js --name \"Cutiebot\""
   },
   "dependencies": {
