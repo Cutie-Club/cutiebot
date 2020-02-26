@@ -1,5 +1,6 @@
 {
 	"prefix": "!",
 	"token": "YOUR-TOKEN-HERE",
-	"roleBlacklist": ["Admin", "Cutiebot", "Nitro Booster"]
+	"roleBlacklist": ["Admin", "Cutiebot", "Nitro Booster"],
+	"modRole": "012345678987654321"
 }

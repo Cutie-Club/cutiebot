@@ -5,6 +5,7 @@ module.exports = {
 	usage: "[@user]",
 	cooldown: 0,
 	guildOnly: true,
+	modOnly: true,
 	execute(message) {
 		const taggedUser = message.mentions.users.first();
 

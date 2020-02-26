@@ -3,6 +3,7 @@ module.exports = {
 	description: "Evaluates arbitrary JavaScript.",
 	cooldown: 0,
 	guildOnly: true,
+	modOnly: true,
 	execute(message, args) {
 		const data = [];
 		const clean = text => {

@@ -4,6 +4,7 @@ module.exports = {
     "Shuts down the bot. If running under PM2, bot will restart automatically!",
 	cooldown: 0,
 	guildOnly: true,
+	modOnly: true,
 	execute(message) {
 		if (message.author.id !== "190917462265430016") {
 			return message.channel.send("❣ **You can't use that command.**");

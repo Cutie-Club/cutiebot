@@ -1,6 +1,6 @@
 const fs = require("fs");
 const Discord = require("discord.js");
-const { prefix, token } = require("./config.json");
+const { prefix, token, modRole } = require("./config.json");
 
 // setup command handler
 const client = new Discord.Client();
@@ -23,10 +23,6 @@ process.on("unhandledRejection", error =>
 // on ready
 client.once("ready", () => {
 	console.log(`Started at ${new Date().toUTCString()}`);
-});
-
-client.on("debug", info => {
-	console.log(`debug -> ${info}`);
 });
 
 // when a user joins
@@ -62,6 +58,12 @@ client.on("message", message => {
 		return message.channel.send(
 			"💔 **We can't do that here. Try it on the server instead!**"
 		);
+	}
+
+	if (command.modOnly && !message.member.roles.has(modRole)) {
+		return message.channel.send(
+			"❣ **That command is restricted to moderators.**"
+		)
 	}
 
 	if (command.args && !args.length) {

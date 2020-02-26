@@ -4,6 +4,7 @@ module.exports = {
 	usage: "[#channel][message]",
 	cooldown: 0,
 	guildOnly: true,
+	modOnly: true,
 	execute(message, args) {
 		const channelID = message.mentions.channels.first();
 		let thingToSay;
