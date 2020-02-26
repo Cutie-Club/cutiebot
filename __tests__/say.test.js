@@ -10,19 +10,39 @@ function logMessage(string, user) {
 	);
 }
 
-let fakeArgs = ["how", "do", "i", "make", "the", "bot", "work"];
+const fakeChannel = {
+	send: jest.fn(message => {
+		return new Promise(resolve => {
+			logMessage(message, { username: "Cutiebot" });
+			resolve();
+		})
+	}),
+	permissionsFor: jest.fn(() => {
+		return {
+			has: jest.fn(() => {
+				 return true;
+			})
+		}})
+};
 
-let fakeMessage = {
+const fakeArgs = ["how", "do", "i", "make", "the", "bot", "work"];
+const fakeMessage = {
+	guild: {
+		me: undefined
+	},
 	mentions: {
 		everyone: false,
 		channels: {
-			first: () => undefined
+			first: jest.fn(() => undefined)
 		}
 	},
-	channel: {
-		send: jest.fn(message => logMessage(message, { username: "Cutiebot" }))
-	},
-	delete: jest.fn(() => console.log("Deleted a message!"))
+	channel: fakeChannel,
+	delete: jest.fn(() => {
+		return new Promise(resolve => {
+	    console.log("Deleted a message!");
+			resolve();
+		})
+	})
 };
 
 afterEach(() => {
@@ -30,8 +50,13 @@ afterEach(() => {
 });
 
 describe("!say command executes correctly", () => {
-	test("!say command echos back user input", () => {
-		say.execute(fakeMessage, fakeArgs);
+	test("When not provided a channel argument, deletes the users command message", async () => {
+		await say.execute(fakeMessage, fakeArgs);
+		expect(fakeMessage.delete).toHaveBeenCalled();
+	});
+
+	test("!say command echos back user input", async () => {
+		await say.execute(fakeMessage, fakeArgs);
 		expect(fakeMessage.channel.send).toHaveBeenCalledWith(
 			"how do i make the bot work"
 		);
@@ -44,32 +69,30 @@ describe("!say command executes correctly", () => {
 		);
 	});
 
-	test("If a channel is mentioned, the bot sends the message to that channel", () => {
-		let fakeMessageClone = fakeMessage;
-		let fakeArgsClone = ["#channel", ...fakeArgs];
-		let sendObject = {
-			send: jest.fn(message => logMessage(message, { username: "Cutiebot" }))
-		};
-		fakeMessageClone.mentions.channels.first = () => sendObject;
+	test("If a channel is mentioned, the bot sends the message to that channel", async () => {
+		const fakeMessageClone = fakeMessage;
+		const fakeArgsClone = ["#channel", ...fakeArgs];
+		fakeMessageClone.mentions.channels.first = jest.fn(() => fakeChannel);
+		await say.execute(fakeMessageClone, fakeArgsClone);
 
-		say.execute(fakeMessageClone, fakeArgsClone);
-		expect(
-			fakeMessageClone.mentions.channels.first().send
-		).toHaveBeenCalledWith("how do i make the bot work");
-		expect(fakeMessageClone.channel.send).toHaveBeenCalledWith(
-			"💖 **Message sent.**"
-		);
+		expect(fakeMessage.mentions.channels.first().send).toHaveBeenCalledWith("how do i make the bot work");
+		expect(fakeMessage.channel.send).toHaveBeenCalledWith("💖 **Message sent.**");
 	});
 
-	test("If the bot lacks permissions to send the message, the bot informs the user", () => {
-		let fakeMessageClone = fakeMessage;
-		let fakeArgsClone = ["#channelICantPostIn", ...fakeArgs];
-		let sendObject = {
-			send: jest.fn(() => new Promise((resolve, reject) => reject("DiscordAPIError: Missing Permissions")))
-		};
-		fakeMessageClone.mentions.channels.first = () => sendObject;
+	test("If the bot lacks permissions to send the message, the bot informs the user", async () => {
+		const fakeMessageClone = fakeMessage;
+		const fakeArgsClone = ["#channelICantPostIn", ...fakeArgs];
+		const fakeChannelBanned = fakeChannel;
+		fakeChannelBanned.permissionsFor = jest.fn(() => {
+			return {
+				has: jest.fn(() => {
+					 return false;
+				})
+			}});
 
-		say.execute(fakeMessageClone, fakeArgsClone);
+		fakeMessageClone.mentions.channels.first = jest.fn(() => fakeChannelBanned);
+
+		await say.execute(fakeMessageClone, fakeArgsClone);
 		expect(fakeMessageClone.channel.send).toHaveBeenCalledWith(
 			"💔 **I can't send a message in that channel.**"
 		);
