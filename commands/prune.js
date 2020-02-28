@@ -5,6 +5,7 @@ module.exports = {
 	usage: '[number]',
 	cooldown: 0,
 	guildOnly: true,
+	modOnly: true,
 	execute(message, args) {
 		const amount = parseInt(args[0]) + 1;
 
