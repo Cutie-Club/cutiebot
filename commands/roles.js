@@ -9,11 +9,12 @@ module.exports = {
 	guildOnly: true,
 	execute(message) {
 
-        let assignableRoles = message.guild.roles.values()
+        let roles = Array.from(message.guild.roles.values());
+        let assignableRoles = roles
             .filter(role=>!roleBlacklist.includes(role.name))
-            .map(role=>role.name);
+            .map(role=>role.name).slice(1).sort();
 
-        let assignableRoleNames = assignableRoles.reduce((a,b)=>`\`${a}\`, \`${b}\``);
+        let assignableRoleNames = `\`${assignableRoles.join("`, `")}\``;
 
         return message.channel.send(`💖 **Here's a list of all the available roles, cutie:**\n${assignableRoleNames}`)
 
