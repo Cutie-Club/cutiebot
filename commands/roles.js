@@ -7,7 +7,7 @@ module.exports = {
 	usage: '[roles]',
 	cooldown: 5,
 	guildOnly: true,
-	execute(message, args) {
+	execute(message) {
 
         let assignableRoles = message.guild.roles.values()
             .filter(role=>!roleBlacklist.includes(role.name))
@@ -15,8 +15,7 @@ module.exports = {
 
         let assignableRoleNames = assignableRoles.reduce((a,b)=>`\`${a}\`, \`${b}\``);
 
-        return message.channel.send(`💖**Here's a list of all the available roles cutie**\n${assignableRoleNames}`)
+        return message.channel.send(`💖 **Here's a list of all the available roles, cutie:**\n${assignableRoleNames}`)
 
 		}
-	},
-};
+	};
