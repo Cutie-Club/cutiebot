@@ -17,7 +17,7 @@
     "prod:start": "pm2 start index.js --name \"Cutiebot\""
   },
   "dependencies": {
-    "discord.js": "^11.5.1"
+    "discord.js": "^11.6.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
