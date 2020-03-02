@@ -3,15 +3,15 @@ const { roleBlacklist } = require("../config.json");
 module.exports = {
 	name: "role",
 	description: "Adds (or removes) a role from a user.",
-	aliases: [],
 	usage: "[role name]",
 	cooldown: 5,
 	guildOnly: true,
 	execute(message, args) {
+		let reason = "Requested via command.";
 		let userInput = args.join(" ");
 		let chosenRole;
 
-		for (let role of message.guild.roles.values()) {
+		for (let role of message.guild.roles.cache.values()) {
 			if (userInput.toLowerCase() === role.name.toLowerCase()) {
 				chosenRole = role;
 			}
@@ -31,15 +31,15 @@ module.exports = {
 			return message.channel.send("💔 **That role isn't self-assignable.**");
 		}
 
-		if (message.member.roles.has(chosenRole.id)) {
-			message.member
-				.removeRole(chosenRole)
+		if (message.member.roles.cache.has(chosenRole.id)) {
+			message.member.roles
+				.remove(chosenRole, reason)
 				.then(
 					message.channel.send(`💖 \`${chosenRole.name}\` **role removed.**`)
 				);
 		} else {
-			message.member
-				.addRole(chosenRole)
+			message.member.roles
+				.add(chosenRole, reason)
 				.then(
 					message.channel.send(`💖 \`${chosenRole.name}\` **role added.**`)
 				);

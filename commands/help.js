@@ -9,10 +9,13 @@ module.exports = {
 	execute(message, args) {
 		const data = [];
 		const { commands } = message.client;
+		const commandList = commands
+			.filter(command => !command.modOnly)
+			.map(command => `\`${command.name}\``).join(", ");
 
 		if (!args.length) {
-			data.push("💖 **Here's a list of all my commands:**\n");
-			data.push(commands.map(command => `\`${command.name}\``).join(", "));
+			data.push("💖 **Here's a list of all my commands:**");
+			data.push(commandList);
 			data.push(
 				`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
 			);
@@ -31,7 +34,7 @@ module.exports = {
 						error
 					);
 					message.channel.send(
-						"💔 **It seems like I can't DM you!**"
+						"💔 **I wish I could tell you, but I can't message you. Change that, or ask for help!**"
 					);
 				});
 		}
@@ -42,23 +45,27 @@ module.exports = {
       commands.find(c => c.aliases && c.aliases.includes(name));
 
 		if (!command) {
-			return message.reply(
-				"❣ **That's not a valid command!**"
+			return message.channel.send(
+				"❣ **I'm sorry, I don't know that one.**"
 			);
 		}
 
 		data.push(`💖 **Cutiebot Help~**\n`);
 		data.push(`**Command:** \`${command.name}\``);
 
-		if (command.aliases)
-			data.push(`**Aliases:** \`${command.aliases.join("`, `")}\``);
-		if (command.description)
+		if (command.aliases) {
+			data.push(`**Aliases:** \`${command.aliases.join("`, `")}\``)
+		}
+		if (command.description) {
 			data.push(`**Description:** ${command.description}`);
-		if (command.usage)
+		}
+		if (command.usage) {
 			data.push(`**Usage:** \`${prefix}${command.name}\` \`${command.usage}\``);
+		}
 
 		data.push(`**Cooldown:** \`${command.cooldown || 3}\` second(s).`);
-
-		message.channel.send(data, { split: true });
+		message.channel.send(data, {
+			split: true
+		});
 	}
 };

@@ -1,6 +1,6 @@
 {
   "name": "cutiebot",
-  "version": "1.1.3",
+  "version": "2.0.0",
   "description": "Cutie Club Discord Server Bot",
   "repository": "https://github.com/amberstarlight/cutiebot.git",
   "author": {
@@ -17,7 +17,7 @@
     "prod:start": "pm2 start index.js --name \"Cutiebot\""
   },
   "dependencies": {
-    "discord.js": "^11.5.1"
+    "discord.js": "github:discordjs/discord.js"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

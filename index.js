@@ -14,8 +14,6 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
-const cooldowns = new Discord.Collection();
-
 process.on("unhandledRejection", error =>
 	console.error("Uncaught Promise Rejection", error)
 );
@@ -27,7 +25,7 @@ client.once("ready", () => {
 
 // when a user joins
 client.on("guildMemberAdd", member => {
-	const welcomeChannel = member.guild.channels.find(channel => channel.name === "general");
+	const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === "general");
 	if (!welcomeChannel) return;
 	welcomeChannel.send(
 		`**${member.user.username} has joined the server. Henlo new fren!** 👋🏻`
@@ -36,7 +34,7 @@ client.on("guildMemberAdd", member => {
 
 // when a user leaves
 client.on("guildMemberRemove", member => {
-	const welcomeChannel = member.guild.channels.find(channel => channel.name === "general");
+	const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === "general");
 	if (!welcomeChannel) return;
 	welcomeChannel.send(`**${member.user.username} has left the server.** 💔`);
 });
@@ -60,7 +58,7 @@ client.on("message", message => {
 		);
 	}
 
-	if (command.modOnly && !message.member.roles.has(modRole)) {
+	if (command.modOnly && !message.member.roles.cache.has(modRole)) {
 		return message.channel.send(
 			"❣ **That command is restricted to moderators.**"
 		)
@@ -74,6 +72,8 @@ client.on("message", message => {
 		return message.channel.send(reply);
 	}
 
+	const cooldowns = new Discord.Collection();
+
 	if (!cooldowns.has(command.name)) {
 		cooldowns.set(command.name, new Discord.Collection());
 	}
@@ -84,16 +84,20 @@ client.on("message", message => {
 
 	if (timestamps.has(message.author.id)) {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
 		if (now < expirationTime) {
 			const timeLeft = (expirationTime - now) / 1000;
-			return message.channel
-				.send(
-					`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`
-				)
-				.then(msg => {
-					msg.delete(3000);
-				});
+			return message.delete({
+				timeout: 0,
+				reason: "Command called during cooldown. Deleted to prevent spam."
+			}).then(() => {
+				message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`)
+					.then(msg => {
+						msg.delete({
+							timeout: 3000,
+							reason: "Cooldown warning deleted."
+						});
+					});
+			});
 		}
 	}
 

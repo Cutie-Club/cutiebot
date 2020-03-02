@@ -9,7 +9,7 @@ module.exports = {
 	guildOnly: true,
 	execute(message) {
 
-		let roles = Array.from(message.guild.roles.values());
+		let roles = Array.from(message.guild.roles.cache.values());
 		let assignableRoles = roles
 			.filter(role=>!roleBlacklist.includes(role.name))
 			.map(role=>role.name).slice(1).sort();
