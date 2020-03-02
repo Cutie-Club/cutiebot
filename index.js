@@ -14,8 +14,6 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
-const cooldowns = new Discord.Collection();
-
 process.on("unhandledRejection", error =>
 	console.error("Uncaught Promise Rejection", error)
 );
@@ -27,7 +25,7 @@ client.once("ready", () => {
 
 // when a user joins
 client.on("guildMemberAdd", member => {
-	const welcomeChannel = member.guild.channels.find(channel => channel.name === "general");
+	const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === "general");
 	if (!welcomeChannel) return;
 	welcomeChannel.send(
 		`**${member.user.username} has joined the server. Henlo new fren!** 👋🏻`
@@ -36,7 +34,7 @@ client.on("guildMemberAdd", member => {
 
 // when a user leaves
 client.on("guildMemberRemove", member => {
-	const welcomeChannel = member.guild.channels.find(channel => channel.name === "general");
+	const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === "general");
 	if (!welcomeChannel) return;
 	welcomeChannel.send(`**${member.user.username} has left the server.** 💔`);
 });
@@ -73,6 +71,8 @@ client.on("message", message => {
 		}
 		return message.channel.send(reply);
 	}
+
+	const cooldowns = new Discord.Collection();
 
 	if (!cooldowns.has(command.name)) {
 		cooldowns.set(command.name, new Discord.Collection());

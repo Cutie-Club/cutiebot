@@ -19,9 +19,7 @@ module.exports = {
 			return message.channel.send("💔 **I can't kick this user.**");
 		}
 
-		message.guild
-			.member(taggedUser)
-			.kick()
+		taggedUser.kick()
 			.catch(err => {
 				console.error(err);
 				message.channel.send(

@@ -18,9 +18,8 @@ module.exports = {
 			return message.channel.send("💔 **I can't ban this user.**");
 		}
 
-		message.guild
-			.member(taggedUser)
-			.ban()
+		message.guild.members
+			.ban(taggedUser)
 			.catch(err => {
 				console.error(err);
 				message.channel.send(
