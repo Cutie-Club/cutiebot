@@ -19,7 +19,9 @@ module.exports = {
 		}
 
 		message.guild.members
-			.ban(taggedUser)
+			.ban(taggedUser, {
+				reason: `Banned by ${message.author.username} via command.`
+			})
 			.catch(err => {
 				console.error(err);
 				message.channel.send(

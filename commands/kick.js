@@ -19,7 +19,7 @@ module.exports = {
 			return message.channel.send("💔 **I can't kick this user.**");
 		}
 
-		taggedUser.kick()
+		taggedUser.kick(`Kicked by ${message.author.username} via command.`)
 			.catch(err => {
 				console.error(err);
 				message.channel.send(
