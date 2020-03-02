@@ -11,12 +11,15 @@ module.exports = {
 			return message.channel.send("❣ **You have to specify a topic!**");
 		}
 
-		const embed = new Discord.RichEmbed()
+		const embed = new Discord.MessageEmbed()
 			.setColor("#FF86F1")
 			.setTitle(`${message.author.username} has started a vote! 🗳`)
 			.setDescription(args.join(" "));
 
-		message.delete();
+		message.delete({
+			timeout: 0,
+			reason: "Vote command setup deleted."
+		});
 		message.channel.send({ embed }).then(msg => {
 			msg.react("👍");
 			msg.react("👎");

@@ -22,7 +22,10 @@ module.exports = {
 
 		message.channel.send(`💖 **Deleted ${amount - 1} message(s).** 🔥`)
 			.then(msg => {
-				msg.delete(5000);
+				msg.delete({
+					timeout: 5000,
+					reason: "Prune command invoked."
+				});
 			});
 
 	},

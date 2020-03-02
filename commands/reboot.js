@@ -5,9 +5,10 @@ module.exports = {
 	guildOnly: true,
 	modOnly: true,
 	execute(message) {
-		message.channel.send("💞 **Shutting down.** 📴");
-		setTimeout(() => {
-			process.exit(1);
-		}, 1000);
+		message.channel.send("💞 **Shutting down.** 📴")
+			.then(() => {
+				console.warn(`Rebooted via command at ${new Date().toUTCString()}`);
+				process.exit();
+			})
 	}
 };

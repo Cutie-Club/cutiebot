@@ -84,16 +84,20 @@ client.on("message", message => {
 
 	if (timestamps.has(message.author.id)) {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
 		if (now < expirationTime) {
 			const timeLeft = (expirationTime - now) / 1000;
-			return message.channel
-				.send(
-					`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`
-				)
-				.then(msg => {
-					msg.delete(3000);
-				});
+			return message.delete({
+				timeout: 0,
+				reason: "Command called during cooldown. Deleted to prevent spam."
+			}).then(() => {
+				message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`)
+					.then(msg => {
+						msg.delete({
+							timeout: 3000,
+							reason: "Cooldown warning deleted."
+						});
+					});
+			});
 		}
 	}
 
