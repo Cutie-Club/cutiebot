@@ -5,7 +5,7 @@ The Cutie Club Discord Server Bot.
 ## Requirements
 
 - `git` [version control](https://git-scm.com/).
-- `node` [version 8.0.0 or higher](https://nodejs.org).
+- `node` [version 12.0.0 or higher](https://nodejs.org).
 
 You will also need a token, if you want to stage the bot on your own server for testing. Create an application in the [Discord Developer Portal](https://discordapp.com/developers) and create a Bot User.
 

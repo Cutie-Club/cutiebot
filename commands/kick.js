@@ -9,10 +9,6 @@ module.exports = {
 	execute(message) {
 		const taggedUser = message.mentions.users.first();
 
-		if (!message.member.roles.some(role => role.name === "Admin")) {
-			return message.channel.send("❣ **You can't use that command.**");
-		}
-
 		if (!message.mentions.users.size) {
 			return message.channel.send(
 				"❣ **You need to mention a user in order to kick them!**"

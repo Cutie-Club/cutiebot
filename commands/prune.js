@@ -9,10 +9,6 @@ module.exports = {
 	execute(message, args) {
 		const amount = parseInt(args[0]) + 1;
 
-		if (!message.member.roles.some(role => role.name === 'Admin')) {
-			return message.channel.send('❣ **You can\'t use that command.**');
-		}
-
 		if (isNaN(amount)) {
 			return message.channel.send('❣ **You need to specify a number of messages for me to delete!**');
 		} else if (amount <= 1 || amount > 100) {

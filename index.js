@@ -60,7 +60,7 @@ client.on("message", message => {
 		);
 	}
 
-	if (command.modOnly && !message.member.roles.has(modRole)) {
+	if (command.modOnly && !message.member.roles.cache.has(modRole)) {
 		return message.channel.send(
 			"❣ **That command is restricted to moderators.**"
 		)
