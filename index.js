@@ -19,11 +19,6 @@ process.on("unhandledRejection", error =>
 	console.error("Uncaught Promise Rejection", error)
 );
 
-// reminderLogger(reminderObject){
-// 	print(reminderObject.message to reminderObject.author);
-// 	remove(reminderObject from db);
-// }
-
 // on ready
 client.once("ready", () => {
 	console.log(`Started at ${new Date().toUTCString()}`);
@@ -59,7 +54,6 @@ client.once("ready", () => {
 		}
 	});
 
-	// for each reminder, set timeout send message function
 });
 
 // when a user joins
