@@ -1,4 +1,5 @@
 const fs = require("fs");
+const db = require("better-sqlite3")("./database/cutiebot.db");
 const Discord = require("discord.js");
 const { prefix, token, modRole } = require("./config.json");
 
@@ -21,6 +22,38 @@ process.on("unhandledRejection", error =>
 // on ready
 client.once("ready", () => {
 	console.log(`Started at ${new Date().toUTCString()}`);
+	// check for db file
+	const tableResult = db.prepare("SELECT count(*) from sqlite_master WHERE type='table' AND name = 'reminders';").get();
+
+	if (!tableResult['count(*)']) {
+		db.prepare(
+			"CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL, channel_id TEXT NOT NULL, message TEXT NOT NULL, start_time INTEGER NOT NULL, end_time INTEGER NOT NULL);"
+		).run();
+		// prep db
+		db.pragma("journal_mode = WAL");
+	}
+
+	// select all from reminders
+	const reminders = db.prepare("SELECT * from reminders").all();
+	const currentTime = Date.now();
+	reminders.forEach(async (reminder) => {
+		const userToRemind = await client.users.fetch(reminder.user_id, true);
+		const channelToPost = await client.channels.fetch(reminder.channel_id, true);
+		const timeToRun = reminder.end_time - currentTime;
+		const removeReminder = db.prepare("DELETE FROM reminders WHERE id = (?)");
+
+		const onCompletion = () => {
+			channelToPost.send(`💖 **${userToRemind.toString()}, here's your reminder: ${reminder.message}.**`, { disableMentions: "everyone" });
+			removeReminder.run(reminder.id);
+		}
+
+		if (timeToRun <= 0) {
+			onCompletion();
+		} else {
+			setTimeout(onCompletion, timeToRun);
+		}
+	});
+
 });
 
 // when a user joins
