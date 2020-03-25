@@ -13,12 +13,8 @@ module.exports = {
 		// select all from reminders
 		const reminders = db.prepare("SELECT * from reminders WHERE user_id = (?)").all(message.author.id);
 
-		let guild_id;
-		if (message.channel.type === "dm") {
-			guild_id = "dm";
-		} else {
-			guild_id = message.guild.id;
-		}
+		let guild_id = "dm";
+		if (message.channel.type !== "dm") guild_id = message.guild.id;
 
 		if (args[0] === "clear") {
 			if (args.length === 2) {

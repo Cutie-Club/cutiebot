@@ -32,12 +32,8 @@ module.exports = {
 		}
 
 		const endTime = startTime + userInputTime;
-		let guild_id;
-		if (message.channel.type == "dm") {
-			guild_id = "dm";
-		} else {
-			guild_id = message.guild.id;
-		}
+		let guild_id = "dm";
+		if (message.channel.type !== "dm") guild_id = message.guild.id;
 
 		idToRemove = createReminder.run(message.author.id, message.channel.id, guild_id, userReminder, startTime, endTime).lastInsertRowid;
 
