@@ -27,7 +27,7 @@ client.once("ready", () => {
 
 	if (!tableResult['count(*)']) {
 		db.prepare(
-			"CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL, channel_id TEXT NOT NULL, message TEXT NOT NULL, start_time INTEGER NOT NULL, end_time INTEGER NOT NULL);"
+			"CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL, channel_id TEXT NOT NULL, guild_id TEXT NOT NULL, message TEXT NOT NULL, start_time INTEGER NOT NULL, end_time INTEGER NOT NULL);"
 		).run();
 		// prep db
 		db.pragma("journal_mode = WAL");
@@ -39,13 +39,16 @@ client.once("ready", () => {
 	const reminders = db.prepare("SELECT * from reminders").all();
 	const currentTime = Date.now();
 	reminders.forEach(async (reminder) => {
-		const userToRemind = await client.users.fetch(reminder.user_id, true);
-		const channelToPost = await client.channels.fetch(reminder.channel_id, true);
+		const userToRemind = await client.users.fetch(reminder.user_id);
+		const channelToPost = await client.channels.fetch(reminder.channel_id);
 		const timeToRun = reminder.end_time - currentTime;
 		const removeReminder = db.prepare("DELETE FROM reminders WHERE id = (?)");
+		const reminderEmbed = new Discord.MessageEmbed()
+			.setColor("#36393f")
+			.setDescription(`⏰ ${reminder.message}`)
 
 		const onCompletion = () => {
-			channelToPost.send(`💖 **${userToRemind.toString()}, here's your reminder: ${reminder.message}.**`, { disableMentions: "everyone" });
+			channelToPost.send(`💖 **${userToRemind.toString()}**, here's your reminder:`, { embed: reminderEmbed });
 			removeReminder.run(reminder.id);
 		}
 
