@@ -13,8 +13,11 @@ module.exports = {
 		// select all from reminders
 		const reminders = db.prepare("SELECT * from reminders WHERE user_id = (?)").all(message.author.id);
 
-		if (reminders.length <= 0) {
-			return message.channel.send("💖 **You don't have any upcoming reminders.**");
+		let guild_id;
+		if (message.channel.type === "dm") {
+			guild_id = "dm";
+		} else {
+			guild_id = message.guild.id;
 		}
 
 		if (args[0] === "clear") {
@@ -31,7 +34,7 @@ module.exports = {
 
 			reminders.forEach(({ id }) => {
 				db.prepare("DELETE FROM reminders WHERE user_id = (?) AND id = (?)").run(message.author.id, id);
-				
+
 				clearTimeout(reminderObj[id]);
 				delete reminderObj[id];
 			});
@@ -40,15 +43,24 @@ module.exports = {
 
 		const currentTime = Date.now();
 		const embed = new Discord.MessageEmbed()
-			.setColor("#36393f")
-			.setDescription(`💞 **${message.author.username}**, here are your upcoming reminders: ⏰`)
+			.setColor("#36393f");
 
-		reminders.forEach(async (reminder) => {
-			const timeToRun = ms(reminder.end_time - currentTime, { long: true });
-			embed.addField(`ID ${reminder.id}, in ${timeToRun}`, reminder.message);
+		let validReminders = reminders.filter(reminder => {
+			if (reminder.guild_id === guild_id) return true;
+			return false;
 		});
 
+		if (validReminders.length) {
+			embed.setDescription(`💞 **${message.author.username}**, here are your upcoming reminders: ⏰`);
+			validReminders.forEach(reminder => {
+				const timeToRun = ms(reminder.end_time - currentTime, { long: true });
+				embed.addField(`ID ${reminder.id}, in ${timeToRun}`, reminder.message);
+			});
+		} else {
+			embed.setDescription(`💖 **${message.author.username}**, you don't have any upcoming reminders! ⏰`);
+		}
+
 		// tell user about their reminders
-		message.channel.send({ embed });
+		message.channel.send({ embed: embed });
 	}
 };
