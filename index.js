@@ -43,9 +43,12 @@ client.once("ready", () => {
 		const channelToPost = await client.channels.fetch(reminder.channel_id);
 		const timeToRun = reminder.end_time - currentTime;
 		const removeReminder = db.prepare("DELETE FROM reminders WHERE id = (?)");
+		const reminderEmbed = new Discord.MessageEmbed()
+			.setColor("#36393f")
+			.setDescription(`⏰ ${reminder.message}`)
 
 		const onCompletion = () => {
-			channelToPost.send(`💖 **${userToRemind.toString()}, here's your reminder: ${reminder.message}.**`, { disableMentions: "everyone" });
+			channelToPost.send(`💖 **${userToRemind.toString()}**, here's your reminder:`, { embed: reminderEmbed });
 			removeReminder.run(reminder.id);
 		}
 
