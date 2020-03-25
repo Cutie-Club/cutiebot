@@ -34,10 +34,12 @@ module.exports = {
 		const endTime = startTime + userInputTime;
 		idToRemove = createReminder.run(message.author.id, message.channel.id, userReminder, startTime, endTime).lastInsertRowid;
 
-		setTimeout(() => {
+		let timeoutID = setTimeout(() => {
 			message.channel.send(`💖 **${message.author.toString()}, here's your reminder: ${userReminder}.**`, { disableMentions: "everyone" });
 			removeReminder.run(idToRemove);
 		}, userInputTime);
+
+		reminderObj[idToRemove] = timeoutID;
 
 		const embed = new Discord.MessageEmbed()
 			.setColor("#36393f")

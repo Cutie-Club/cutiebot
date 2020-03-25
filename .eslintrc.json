@@ -5,6 +5,9 @@
     "es6": true,
     "jest": true
   },
+  "globals": {
+    "reminderObj": true
+  },
   "parserOptions": {
     "ecmaVersion": 2020
   },

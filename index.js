@@ -33,6 +33,8 @@ client.once("ready", () => {
 		db.pragma("journal_mode = WAL");
 	}
 
+	global.reminderObj = {};
+
 	// select all from reminders
 	const reminders = db.prepare("SELECT * from reminders").all();
 	const currentTime = Date.now();
@@ -50,7 +52,8 @@ client.once("ready", () => {
 		if (timeToRun <= 0) {
 			onCompletion();
 		} else {
-			setTimeout(onCompletion, timeToRun);
+			let timeoutID = setTimeout(onCompletion, timeToRun);
+			reminderObj[reminder.id] = timeoutID;
 		}
 	});
 
