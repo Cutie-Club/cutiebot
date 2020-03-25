@@ -18,14 +18,22 @@ module.exports = {
 		}
 
 		if (args[0] === "clear") {
-			if (args.length === 2){
+			if (args.length === 2) {
 				const deleteResult = db.prepare("DELETE FROM reminders WHERE user_id = (?) AND id = (?)").run(message.author.id, args[1]);
+
 				if (!deleteResult.changes) return message.channel.send(`❣️ **Reminder ${args[1]} could not be cleared.**`);
+
+				clearTimeout(reminderObj[args[1]]);
+				delete reminderObj[args[1]];
+
 				return message.channel.send(`💖 **Reminder ${args[1]} cleared.**`);
 			}
 
 			reminders.forEach(({ id }) => {
-				db.prepare("DELETE FROM reminders WHERE user_id = (?) AND id = (?)").run(message.author.id, id)
+				db.prepare("DELETE FROM reminders WHERE user_id = (?) AND id = (?)").run(message.author.id, id);
+				
+				clearTimeout(reminderObj[id]);
+				delete reminderObj[id];
 			});
 			return message.channel.send("💖 **Reminders cleared.**");
 		}
