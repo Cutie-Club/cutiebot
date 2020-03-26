@@ -6,7 +6,8 @@
     "jest": true
   },
   "globals": {
-    "reminderObj": true
+    "reminderObj": true,
+    "log": true
   },
   "parserOptions": {
     "ecmaVersion": 2020

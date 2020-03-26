@@ -15,18 +15,19 @@ module.exports = {
 			return message.channel.send('❣ **You need to input a number between 1 and 99.**');
 		}
 
-		message.channel.bulkDelete(amount, true).catch(err => {
-			console.error(err);
-			message.channel.send('💔 **There was an error trying to prune messages in this channel!**');
-		});
-
-		message.channel.send(`💖 **Deleted ${amount - 1} message(s).** 🔥`)
-			.then(msg => {
-				msg.delete({
-					timeout: 5000,
-					reason: "Prune command invoked."
+		message.channel.bulkDelete(amount, true)
+			.then(messages => {
+				log.info(`${message.author.username} deleted ${messages.size} messages in #${message.channel.name}, on ${message.guild.name}.`);
+				message.channel.send(`💖 **Deleted ${messages.size} message(s).** 🔥`).then(msg => {
+					msg.delete({
+						timeout: 5000,
+						reason: "Prune command invoked."
+					});
 				});
+			})
+			.catch(err => {
+				log.error(err);
+				message.channel.send('💔 **There was an error trying to prune messages in this channel!**');
 			});
-
 	},
 };

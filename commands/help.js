@@ -29,7 +29,7 @@ module.exports = {
 					);
 				})
 				.catch(error => {
-					console.error(
+					log.error(
 						`Could not send help DM to ${message.author.tag}.\n`,
 						error
 					);

@@ -1,3 +1,7 @@
+const loggerInit = require("./utils/logger.js");
+loggerInit();
+log.time("startup");
+
 const fs = require("fs");
 const db = require("better-sqlite3")("./database/cutiebot.db");
 const Discord = require("discord.js");
@@ -16,12 +20,14 @@ for (const file of commandFiles) {
 }
 
 process.on("unhandledRejection", error =>
-	console.error("Uncaught Promise Rejection", error)
+	log.error("Uncaught Promise Rejection", error)
 );
 
 // on ready
 client.once("ready", () => {
-	console.log(`Started at ${new Date().toUTCString()}`);
+	log.time("completed");
+	log.info(`Started at ${new Date().toUTCString()}`);
+	log.timeBetween("startup", "completed");
 	// check for db file
 	const tableResult = db.prepare("SELECT count(*) from sqlite_master WHERE type='table' AND name = 'reminders';").get();
 
@@ -146,7 +152,7 @@ client.on("message", message => {
 	try {
 		command.execute(message, args);
 	} catch (error) {
-		console.error(error);
+		log.error(error);
 		message.channel.send(
 			"💔 **I couldn't execute that command. Maybe ask for help?**"
 		);
