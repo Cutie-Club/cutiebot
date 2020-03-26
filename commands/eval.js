@@ -26,7 +26,7 @@ module.exports = {
 			if (typeof evaled !== "string") evaled = require("util").inspect(evaled);
 			data.push(clean(evaled), { code: "js" });
 
-			console.log(data);
+			log.debug(data);
 			message.channel.send(data, {
 				disableEveryone: true,
 				code: "js",

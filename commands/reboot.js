@@ -7,7 +7,7 @@ module.exports = {
 	execute(message) {
 		message.channel.send("💞 **Shutting down.** 📴")
 			.then(() => {
-				console.warn(`Rebooted via command at ${new Date().toUTCString()}`);
+				log.warn(`Rebooted via command at ${new Date().toUTCString()}`);
 				process.exit();
 			})
 	}
