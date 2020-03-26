@@ -68,6 +68,10 @@ client.once("ready", () => {
 
 });
 
+client.on("debug", debug => {
+	log.debug(debug);
+})
+
 // when a user joins
 client.on("guildMemberAdd", member => {
 	const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === "general");
