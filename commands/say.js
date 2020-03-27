@@ -16,7 +16,7 @@ module.exports = {
 		if (!channelID) {
 			thingToSay = args.join(" ");
 			message.delete().then(() => {
-				message.channel.send(thingToSay)
+				message.channel.send(thingToSay);
 			});
 		} else {
 			thingToSay = args.slice(1).join(" ");

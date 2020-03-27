@@ -54,11 +54,13 @@ module.exports = {
 		data.push(`**Command:** \`${command.name}\``);
 
 		if (command.aliases) {
-			data.push(`**Aliases:** \`${command.aliases.join("`, `")}\``)
+			data.push(`**Aliases:** \`${command.aliases.join("`, `")}\``);
 		}
+
 		if (command.description) {
 			data.push(`**Description:** ${command.description}`);
 		}
+		
 		if (command.usage) {
 			data.push(`**Usage:** \`${prefix}${command.name}\` \`${command.usage}\``);
 		}

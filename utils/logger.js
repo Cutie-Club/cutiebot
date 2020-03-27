@@ -28,8 +28,8 @@ const timestamp = {
 			weekday: "short",
 			month: "short",
 			day: "numeric"
-		}
-		return `${new Date().toLocaleString("en-GB", options)}`
+		};
+		return `${new Date().toLocaleString("en-GB", options)}`;
 	}
 };
 

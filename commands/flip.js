@@ -6,12 +6,13 @@ module.exports = {
 	execute(message) {
 		const flip = () => {
 		  return (Math.random() >= 0.5) ? 'Heads' : 'Tails';
-		}
+		};
+
 		message.channel.send(`💞 **Flipping a coin...**`)
 		  .then(msg => {
 		    setTimeout(() => {
-		      msg.edit(`💖 **${flip()}!**`)
-		    }, 2000)
+		      msg.edit(`💖 **${flip()}!**`);
+		    }, 2000);
 			});
 	}
-}
+};

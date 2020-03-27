@@ -39,7 +39,7 @@ module.exports = {
 
 		const reminderEmbed = new Discord.MessageEmbed()
 			.setColor("#36393f")
-			.setDescription(`⏰ ${userReminder}`)
+			.setDescription(`⏰ ${userReminder}`);
 
 		let timeoutID = setTimeout(() => {
 			message.channel.send(`💖 **${message.author.toString()}**, here's your reminder:`, { embed: reminderEmbed });
@@ -50,7 +50,7 @@ module.exports = {
 
 		const reminderSet = new Discord.MessageEmbed()
 			.setColor("#36393f")
-			.setDescription(`💞 **${message.author.username}**, I'll remind you in ${ms(userInputTime, { long:true })}: **${userReminder}**. ⏰`)
+			.setDescription(`💞 **${message.author.username}**, I'll remind you in ${ms(userInputTime, { long:true })}: **${userReminder}**. ⏰`);
 
 		// tell user their reminder was set
 		message.channel.send({ embed: reminderSet });
