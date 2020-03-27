@@ -23,8 +23,8 @@ for (const file of commandFiles) {
 }
 
 // setup event handler
-const eventFiles = fs.
-	readdirSync("./events/")
+const eventFiles = fs
+	.readdirSync("./events/")
 	.filter(file => file.endsWith(".js"));
 log.info(`Loading a total of ${chalk.bold(eventFiles.length)} events.`);
 
