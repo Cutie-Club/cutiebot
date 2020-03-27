@@ -18,6 +18,7 @@
     "no-console": "off",
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-var": "error",
-    "object-curly-spacing": ["error", "always"]
+    "object-curly-spacing": ["error", "always"],
+    "semi": ["warn", "always"]
   }
 }

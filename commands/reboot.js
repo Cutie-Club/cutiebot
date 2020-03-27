@@ -9,6 +9,6 @@ module.exports = {
 			.then(() => {
 				log.warn(`Rebooted via command at ${new Date().toUTCString()}`);
 				process.exit();
-			})
+			});
 	}
 };

@@ -15,14 +15,14 @@ const fakeChannel = {
 		return new Promise(resolve => {
 			logMessage(message, { username: "Cutiebot" });
 			resolve();
-		})
+		});
 	}),
 	permissionsFor: jest.fn(() => {
 		return {
 			has: jest.fn(() => {
 				 return true;
 			})
-		}})
+		};})
 };
 
 const fakeArgs = ["how", "do", "i", "make", "the", "bot", "work"];
@@ -41,7 +41,7 @@ const fakeMessage = {
 		return new Promise(resolve => {
 	    console.log("Deleted a message!");
 			resolve();
-		})
+		});
 	})
 };
 
@@ -88,7 +88,7 @@ describe("!say command executes correctly", () => {
 				has: jest.fn(() => {
 					 return false;
 				})
-			}});
+			};});
 
 		fakeMessageClone.mentions.channels.first = jest.fn(() => fakeChannelBanned);
 
