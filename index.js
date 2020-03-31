@@ -3,11 +3,16 @@ loggerInit();
 log.time("startup");
 log.info("Starting Cutiebot!");
 
+// cache settings;
+// const settings = require("./utils/settings.js");
+
+// import discord.js, token, and set up client
 const Discord = require("discord.js");
-const client = new Discord.Client();
-const chalk = require("chalk");
-const fs = require("fs");
 const { token } = require("./config.json");
+const client = new Discord.Client();
+
+const fs = require("fs");
+const chalk = require("chalk");
 
 // setup command handler
 client.commands = new Discord.Collection();
@@ -35,6 +40,7 @@ for (const file of eventFiles) {
 	log.debug(`Loaded ${chalk.bold(eventName)} event.`);
 }
 
+// error handling
 process.on("unhandledRejection", error =>
 	log.error(`Uncaught Promise Rejection: ${error}`)
 );

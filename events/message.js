@@ -1,10 +1,22 @@
 const Discord = require("discord.js");
-const { prefix, modRole } = require("../config.json");
+const settings = require("../utils/settings.js");
 
 module.exports = (client, message) => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).split(/ +/);
+	let guildSettings;
+	if (message.channel.type === "dm") {
+		guildSettings = {
+			prefix: "!",
+			mod_role: null
+		};
+	} else {
+		guildSettings = settings.getSettings(message.guild.id);
+	}
+
+	if (!message.content.startsWith(guildSettings.prefix)) return;
+
+	const args = message.content.slice(guildSettings.prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
 	const command =
@@ -19,7 +31,8 @@ module.exports = (client, message) => {
 		);
 	}
 
-	if (command.modOnly && !message.member.roles.cache.has(modRole)) {
+	// if mod only and they not (mod or admin)
+	if (command.modOnly && !(message.member.roles.cache.has(guildSettings.mod_role) || message.member.hasPermission("ADMINISTRATOR"))) {
 		return message.channel.send(
 			"❣ **That command is restricted to moderators.**"
 		);
@@ -28,7 +41,7 @@ module.exports = (client, message) => {
 	if (command.args && !args.length) {
 		let reply = `❣ **This command needs some arguments.**`;
 		if (command.usage) {
-			reply += `\nTo use it, type: \`${prefix}${command.name} ${command.usage}\``;
+			reply += `\nTo use it, type: \`${guildSettings.prefix}${command.name} ${command.usage}\``;
 		}
 		return message.channel.send(reply);
 	}
@@ -51,7 +64,7 @@ module.exports = (client, message) => {
 				timeout: 0,
 				reason: "Command called during cooldown. Deleted to prevent spam."
 			}).then(() => {
-				message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`)
+				message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)
 					.then(msg => {
 						msg.delete({
 							timeout: 3000,

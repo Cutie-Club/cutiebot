@@ -1,4 +1,4 @@
-const { prefix } = require("../config.json");
+const settings = require("../utils/settings.js");
 
 module.exports = {
 	name: "help",
@@ -7,6 +7,7 @@ module.exports = {
 	usage: "[command name]",
 	cooldown: 5,
 	execute(message, args) {
+		const guildSettings = settings.getSettings(message.guild.id);
 		const data = [];
 		const { commands } = message.client;
 		const commandList = commands
@@ -17,7 +18,7 @@ module.exports = {
 			data.push("💖 **Here's a list of all my commands:**");
 			data.push(commandList);
 			data.push(
-				`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
+				`\nYou can send \`!help [command name]\` to get info on a specific command!`
 			);
 
 			return message.author
@@ -62,7 +63,7 @@ module.exports = {
 		}
 		
 		if (command.usage) {
-			data.push(`**Usage:** \`${prefix}${command.name}\` \`${command.usage}\``);
+			data.push(`**Usage:** \`${guildSettings.prefix}${command.name}\` \`${command.usage}\``);
 		}
 
 		data.push(`**Cooldown:** \`${command.cooldown || 3}\` second(s).`);

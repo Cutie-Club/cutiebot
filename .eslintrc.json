@@ -6,7 +6,6 @@
     "jest": true
   },
   "globals": {
-    "reminderObj": true,
     "log": true
   },
   "parserOptions": {
