@@ -24,8 +24,8 @@ const settingsPrettifier = {
 };
 
 const transformer = (setting, value, message) => {
+	if (value === null || value === undefined) return "not set";
 	if (Object.keys(transformations).includes(setting)) return transformations[setting](value, message);
-	if (value == null || undefined) return "not set";
 	return value;
 };
 
