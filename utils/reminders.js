@@ -54,6 +54,6 @@ module.exports = {
 		const deleteResult = removeUserReminder.run(id, userID);
 		clearTimeout(reminderObject[id]);
 		delete reminderObject[id];
-		return new Boolean (deleteResult.changes);
+		return Boolean (deleteResult.changes);
 	}
 };

@@ -1,4 +1,5 @@
 const settings = require("../utils/settings.js");
+const embed = require("../utils/embed.js");
 
 module.exports = (client, member) => {
 	let guildSettings = settings.getSettings(member.guild.id);
@@ -8,7 +9,7 @@ module.exports = (client, member) => {
 
 	const welcomeChannel = member.guild.channels.cache.get(guildSettings.welcome_channel_id);
 
-	welcomeChannel.send(
-		`**${member.user.username} has joined the server. Henlo new fren!** 👋🏻`
-	);
+	welcomeChannel.send({
+		embed: embed(`**${member.user.username} has joined the server. Henlo new fren!** 👋🏻`)
+	});
 };

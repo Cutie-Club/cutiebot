@@ -7,8 +7,8 @@ const rolesFormatter = (roles, message) => roles.map(id => {
 }).join('\n');
 
 const transformations = {
-	"role_cmds": value => new Boolean(value),
-	"welcome_msgs": value => new Boolean(value),
+	"role_cmds": value => Boolean(value),
+	"welcome_msgs": value => Boolean(value),
 	"role_blacklist": rolesFormatter,
 	"mod_role": rolesFormatter,
 	"welcome_channel_id": (id, message) => `#${message.guild.channels.cache.get(id).name} (${id})`
