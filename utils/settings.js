@@ -15,11 +15,16 @@ const boolParser = input => {
 	throw `Invalid argument \`${input}\`, argument should be of type: \`bool\`.`;
 };
 
-const modifyArray = (flag, array, item) => {
+const idChecker = (collection, id) => {
+	if (!collection.get(id)) throw `Could not find \`${id}\` on this server.`;
+};
+
+const modifyArray = (flag, array, item, collection) => {
 	let itemArray = [item];
 	if (Array.isArray(item)) itemArray = item.slice();
 	let adding;
 	itemArray.forEach(item => {
+		idChecker(collection, item);
 		let itemExists = array.includes(item);
 		if (keyWords.add.includes(flag)) {
 			adding = true;
@@ -42,35 +47,38 @@ const modifyArray = (flag, array, item) => {
 	}
 };
 
-const roleListHandler = (id, input, key) => {
+const roleListHandler = (id, input, key, collection) => {
 	const roles = (settings[id][key] || []).slice();
 	if (input.length === 1) {
-		modifyArray("add", roles, input[0]);
+		modifyArray("add", roles, input[0], collection);
 		return roles;
 	}
-	modifyArray(input[0], roles, input.slice(1));
+	modifyArray(input[0], roles, input.slice(1), collection);
+	if (roles.length === 0) return null;
 	return roles;
 };
 
 // settings validators
 const validSettings = {
-	"prefix": (id, [input]) => {
-		if (typeof(input) !== "string") throw `Type error; prefix should be a \`string\`.`;
+	"prefix": (guild, [input]) => {
+		if (typeof(input) !== "string") throw `TypeError; prefix should be a \`string\`.`;
 		if (input.length !== 1) throw `Prefix too long; should be of length \`1\``;
 		return input;
 	},
-	"role_blacklist": (id, input) => roleListHandler(id, input, "role_blacklist"),
-	"mod_role": (id, input) => roleListHandler(id, input, "mod_role"),
-	"role_cmds": (id, [input]) => boolParser(input),
-	"welcome_msgs": (id, [input]) => boolParser(input),
-	"welcome_channel_id": (id, [input]) => input,
+	"role_blacklist": (guild, input) => roleListHandler(guild.id, input, "role_blacklist", guild.roles.cache),
+	"mod_role": (guild, input) => roleListHandler(guild.id, input, "mod_role", guild.roles.cache),
+	"role_cmds": (guild, [input]) => boolParser(input),
+	"welcome_msgs": (guild, [input]) => boolParser(input),
+	"welcome_channel_id": (guild, [input]) => {
+		idChecker(guild.channels.cache, input);
+		return input;
+	},
 };
 
 // settings helpers
 const generateParameterString = len => {
 	const questionMarkArray = new Array(len).fill("?");
 	return `(${questionMarkArray})`;
-
 };
 
 const initFunction = currentGuilds => {
@@ -126,16 +134,16 @@ const initFunction = currentGuilds => {
 	return result;
 };
 
-const updateSetting = (id, setting, valueArray) => {
+const updateSetting = (guild, setting, valueArray) => {
 	// check if supplied setting is allowed
 	if (!Object.keys(validSettings).includes(setting)) throw `Setting \`${setting}\` was not found.`;
 
 	let transformedInput;
 	try {
-		transformedInput = validSettings[setting](id, valueArray);
-		settings[id][setting] = transformedInput;
+		transformedInput = validSettings[setting](guild, valueArray);
+		settings[guild.id][setting] = transformedInput;
 		if (Array.isArray(transformedInput)) transformedInput = JSON.stringify(transformedInput);
-		db.prepare(`UPDATE settings SET ${setting} = ? WHERE guild_id = ?`).run(transformedInput, id);
+		db.prepare(`UPDATE settings SET ${setting} = ? WHERE guild_id = ?`).run(transformedInput, guild.id);
 		return 0;
 	} catch (error) {
 		return error;
@@ -145,16 +153,5 @@ const updateSetting = (id, setting, valueArray) => {
 module.exports = {
 	init: currentGuilds => initFunction(currentGuilds),
 	getSettings: id => settings[id],
-	updateSetting: (id, setting, valueArray) => updateSetting(id, setting, valueArray)
+	updateSetting: updateSetting
 };
-
-// QOL Improvements:
-// keyword of delete instead of anything like poo :tick:
-// let user know when issue is thrown :tick:
-// pick welcome channel in guildMemberAdd/Remove from settings :tick:
-// print id's with roles :tick:
-// use embeds everywhere :tick: 
-// print role objects with id's in settings printout :tick:
-// print welcome channel name in settings printout :tick:
-
-// aliases for setting names (maybe, if it isnt hard)

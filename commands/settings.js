@@ -1,9 +1,15 @@
 const settings = require("../utils/settings.js");
 const embed = require("../utils/embed.js");
 
+const idResolver = (collection, id) =>  {
+	const item = collection.get(id);
+	if (item) return (item.name);
+	return "ERROR";
+};
+
 const rolesFormatter = (roles, message) => roles.map(id => {
-	const role = message.guild.roles.cache.get(id);
-	return `${role.name} (${role.id})`;
+	const roleName = idResolver(message.guild.roles.cache, id);
+	return `${roleName} (${id})`;
 }).join('\n');
 
 const transformations = {
@@ -11,7 +17,7 @@ const transformations = {
 	"welcome_msgs": value => Boolean(value),
 	"role_blacklist": rolesFormatter,
 	"mod_role": rolesFormatter,
-	"welcome_channel_id": (id, message) => `#${message.guild.channels.cache.get(id).name} (${id})`
+	"welcome_channel_id": (id, message) => `#${idResolver(message.guild.channels.cache, id)} (${id})`
 };
 
 const settingsPrettifier = {
@@ -47,7 +53,7 @@ module.exports = {
 		if (args.length === 0) {
 			let settingArray = Object.entries(guildSettings);
 			settingArray.forEach(([settingName, settingValue]) => {
-				settingsEmbed.addField(`**${settingsPrettifier[settingName]}** (${settingName})`, `\`\`\`js\n${transformer(settingName,settingValue,message)}\`\`\``);
+				settingsEmbed.addField(`**${settingsPrettifier[settingName]}** (${settingName})`, `\`\`\`js\n${transformer(settingName, settingValue, message)}\`\`\``);
 			});
 			return message.channel.send({ embed: settingsEmbed });
 		}
@@ -62,21 +68,23 @@ module.exports = {
 
 			if (args.length >= 2) { // value supplied
 				const value = args.slice(1);
-				const result = settings.updateSetting(message.guild.id, setting, value);
+				const result = settings.updateSetting(message.guild, setting, value);
 				if (result !== 0) {
-					const errorEmbed = embed("❣ There was an error updating that setting.");
+					const errorEmbed = embed("❣ **There was an error updating that setting.**");
 					errorEmbed.addField("Error:", result);
-					return message.channel.send({ embed: errorEmbed });
+					return message.channel.send({
+						embed: errorEmbed
+					});
 				}
-				
+
 				guildSettings = settings.getSettings(message.guild.id);
 				return message.channel.send({
-					embed: embed(`💖 **Settings updated:** set ${setting} to \`${transformer(setting, guildSettings[setting])}\``)
+					embed: embed(`💖 **Settings updated:** set ${settingsPrettifier[setting]} to \`${transformer(setting, guildSettings[setting], message)}\``)
 				});
 			}
 
 			return message.channel.send({
-				embed: embed(`💖 **Currently, ${setting} is \`${transformer(setting, guildSettings[setting])}\`.**`)
+				embed: embed(`💖 **Currently, ${(settingsPrettifier[setting]).toLowerCase()} is \`${transformer(setting, guildSettings[setting], message)}\`**`)
 			});
 		}
 	}	
