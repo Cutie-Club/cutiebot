@@ -1,4 +1,5 @@
 const say = require("../commands/say.js");
+const embed = require("../utils/embed.js");
 
 function logMessage(string, user) {
 	let minute = new Date().getMinutes().toString();
@@ -22,7 +23,8 @@ const fakeChannel = {
 			has: jest.fn(() => {
 				 return true;
 			})
-		};})
+		};
+	})
 };
 
 const fakeArgs = ["how", "do", "i", "make", "the", "bot", "work"];
@@ -64,9 +66,9 @@ describe("!say command executes correctly", () => {
 
 	test("If user input is not provided, the bot informs the user", () => {
 		say.execute(fakeMessage, []);
-		expect(fakeMessage.channel.send).toHaveBeenCalledWith(
-			"❣ **You need to tell me what to say!**"
-		);
+		expect(fakeMessage.channel.send).toHaveBeenCalledWith({
+			embed: embed("❣ **You need to tell me what to say!**")
+		});
 	});
 
 	test("If a channel is mentioned, the bot sends the message to that channel", async () => {
@@ -76,7 +78,9 @@ describe("!say command executes correctly", () => {
 		await say.execute(fakeMessageClone, fakeArgsClone);
 
 		expect(fakeMessage.mentions.channels.first().send).toHaveBeenCalledWith("how do i make the bot work");
-		expect(fakeMessage.channel.send).toHaveBeenCalledWith("💖 **Message sent.**");
+		expect(fakeMessage.channel.send).toHaveBeenCalledWith({
+			embed: embed("💖 **Message sent.**")
+		});
 	});
 
 	test("If the bot lacks permissions to send the message, the bot informs the user", async () => {
@@ -93,8 +97,8 @@ describe("!say command executes correctly", () => {
 		fakeMessageClone.mentions.channels.first = jest.fn(() => fakeChannelBanned);
 
 		await say.execute(fakeMessageClone, fakeArgsClone);
-		expect(fakeMessageClone.channel.send).toHaveBeenCalledWith(
-			"💔 **I can't send a message in that channel.**"
-		);
+		expect(fakeMessageClone.channel.send).toHaveBeenCalledWith({
+			embed: embed("💔 **I can't send a message in that channel.**")
+		});
 	});
 });

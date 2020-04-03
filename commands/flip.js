@@ -1,3 +1,5 @@
+const embed = require("../utils/embed.js");
+
 module.exports = {
 	name: "flip",
 	description: "Flips a coin!",
@@ -8,10 +10,14 @@ module.exports = {
 		  return (Math.random() >= 0.5) ? 'Heads' : 'Tails';
 		};
 
-		message.channel.send(`💞 **Flipping a coin...**`)
+		message.channel.send({
+			embed: embed(`💞 **Flipping a coin...**`)
+		})
 		  .then(msg => {
 		    setTimeout(() => {
-		      msg.edit(`💖 **${flip()}!**`);
+		      msg.edit({
+						embed: embed(`💖 **${flip()}!**`)
+					});
 		    }, 2000);
 			});
 	}

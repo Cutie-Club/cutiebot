@@ -1,4 +1,5 @@
-const { prefix } = require("../config.json");
+const embed = require("../utils/embed.js");
+const settings = require("../utils/settings.js");
 
 module.exports = {
 	name: "help",
@@ -7,35 +8,35 @@ module.exports = {
 	usage: "[command name]",
 	cooldown: 5,
 	execute(message, args) {
-		const data = [];
+		let guildSettings = {};
+		if (message.channel.type !== "dm") guildSettings = settings.getSettings(message.guild.id);
 		const { commands } = message.client;
-		const commandList = commands
-			.filter(command => !command.modOnly)
-			.map(command => `\`${command.name}\``).join(", ");
 
 		if (!args.length) {
-			data.push("💖 **Here's a list of all my commands:**");
-			data.push(commandList);
-			data.push(
-				`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
-			);
+			const helpEmbed = embed(`You can send \`!help [command name]\` to get info on a specific command!`);
+			helpEmbed.setTitle("💖 **Here's a list of all my commands:**");
+			
+			commands
+				.filter(command => !command.modOnly)
+				.forEach(command => helpEmbed.addField(`**${command.name}**`, command.description || "\u200b"));
 
 			return message.author
-				.send(data, { split: true })
-				.then(() => {
+				.send({
+					embed: helpEmbed
+				}).then(() => {
 					if (message.channel.type === "dm") return;
-					message.channel.send(
-						"💖 **I've sent you a message with all my commands!~**"
-					);
+					message.channel.send({
+						embed: embed("💖 **I've sent you a message with all my commands!~**")
+					});
 				})
 				.catch(error => {
 					log.error(
 						`Could not send help DM to ${message.author.tag}.\n`,
 						error
 					);
-					message.channel.send(
-						"💔 **I wish I could tell you, but I can't message you. Change that, or ask for help!**"
-					);
+					message.channel.send({
+						embed: embed("💔 **I wish I could tell you, but I can't message you. Change that, or ask for help!**")
+					});
 				});
 		}
 
@@ -45,29 +46,30 @@ module.exports = {
       commands.find(c => c.aliases && c.aliases.includes(name));
 
 		if (!command) {
-			return message.channel.send(
-				"❣ **I'm sorry, I don't know that one.**"
-			);
+			return message.channel.send({
+				embed: embed("❣ **I'm sorry, I don't know that one.**")
+			});
 		}
 
-		data.push(`💖 **Cutiebot Help~**\n`);
-		data.push(`**Command:** \`${command.name}\``);
+		const commandEmbed = embed(`**Command:** \`${command.name}\``);
+		commandEmbed.setTitle(`💖 **Cutiebot Help~**`);
 
 		if (command.aliases) {
-			data.push(`**Aliases:** \`${command.aliases.join("`, `")}\``);
+			commandEmbed.addField("**Aliases:**", `\`${command.aliases.join("`, `")}\``);
 		}
 
 		if (command.description) {
-			data.push(`**Description:** ${command.description}`);
+			commandEmbed.addField("**Description:**", `${command.description}`);
 		}
 		
 		if (command.usage) {
-			data.push(`**Usage:** \`${prefix}${command.name}\` \`${command.usage}\``);
+			commandEmbed.addField("**Usage:**", `\`${guildSettings.prefix || "!"}${command.name}\` \`${command.usage}\``);
 		}
 
-		data.push(`**Cooldown:** \`${command.cooldown || 3}\` second(s).`);
-		message.channel.send(data, {
-			split: true
+		commandEmbed.addField("**Cooldown:**", `\`${command.cooldown || 3}\` second${command.cooldown != 1 ? "s" : ""}.`);
+
+		message.channel.send({
+			embed: commandEmbed
 		});
 	}
 };

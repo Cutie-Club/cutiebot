@@ -1,3 +1,5 @@
+const embed = require("../utils/embed.js");
+
 module.exports = {
 	name: "kick",
 	description: "Kicks a naughty user.",
@@ -7,26 +9,40 @@ module.exports = {
 	guildOnly: true,
 	modOnly: true,
 	execute(message) {
-		const taggedUser = message.mentions.users.first();
+		const user = message.mentions.users.first();
 
 		if (!message.mentions.users.size) {
-			return message.channel.send(
-				"❣ **You need to mention a user in order to kick them!**"
-			);
-		}
-
-		if (!message.guild.member(taggedUser).kickable) {
-			return message.channel.send("💔 **I can't kick this user.**");
-		}
-
-		taggedUser.kick(`Kicked by ${message.author.username} via command.`)
-			.catch(err => {
-				log.error(err);
-				message.channel.send(
-					"💔 **There was an error trying to kick that user!**"
-				);
+			return message.channel.send({
+				embed: embed("❣ **You need to mention a user in order to kick them!**")
 			});
+		}
 
-		message.channel.send("💖 **Kicked.** 👟");
+		if (user) {
+			const member = message.guild.member(user);
+			if (!member) {
+				return message.channel.send({
+					embed: embed("❣ **I can't find that user. Are they in this server?**")
+				});
+			}
+
+			if (!member.manageable) {
+				return message.channel.send({
+					embed: embed("❣ **I don't have the correct permissions to do that.**")
+				});
+			}
+
+			member.kick(`Kicked by ${message.author.username} via command.`)
+				.then(() => {
+					message.channel.send({
+						embed: embed(`💖 **${user.tag} was kicked.** 👟`)
+					});
+				})
+				.catch(err => {
+					log.error(err);
+					message.channel.send({
+						embed: embed("💔 **There was an error trying to kick that user!**")
+					});
+				});
+		}
 	}
 };

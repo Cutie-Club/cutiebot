@@ -1,3 +1,5 @@
+const embed = require("../utils/embed.js");
+
 module.exports = {
 	name: "eval",
 	description: "Evaluates arbitrary JavaScript.",
@@ -5,6 +7,10 @@ module.exports = {
 	guildOnly: true,
 	modOnly: true,
 	execute(message, args) {
+		// return silently if not Sierra#0001
+		// due to the nature of eval
+		if (message.author.id !== "190917462265430016") return;
+
 		const data = [];
 		const clean = text => {
 			if (typeof text === "string") {
@@ -15,10 +21,6 @@ module.exports = {
 				return text;
 			}
 		};
-
-		if (message.author.id !== "190917462265430016") {
-			data.push("❣ **You can't use that command.**");
-		}
 
 		try {
 			const code = args.join(" ");
@@ -33,7 +35,9 @@ module.exports = {
 				split: true
 			});
 		} catch (err) {
-			message.channel.send(`💔 **ERROR** \`\`\`xl\n${clean(err)}\n\`\`\``);
+			message.channel.send({
+				embed: embed(`💔 **ERROR** \`\`\`xl\n${clean(err)}\n\`\`\``)
+			});
 		}
 	}
 };

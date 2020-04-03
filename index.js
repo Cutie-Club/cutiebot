@@ -4,12 +4,12 @@ log.time("startup");
 log.info("Starting Cutiebot!");
 
 const Discord = require("discord.js");
-const client = new Discord.Client();
-const chalk = require("chalk");
-const fs = require("fs");
 const { token } = require("./config.json");
+const client = new Discord.Client();
 
-// setup command handler
+const fs = require("fs");
+const chalk = require("chalk");
+
 client.commands = new Discord.Collection();
 const commandFiles = fs
 	.readdirSync("./commands")
@@ -22,7 +22,6 @@ for (const file of commandFiles) {
 	log.debug(`Loaded ${chalk.bold(command.name)} command.`);
 }
 
-// setup event handler
 const eventFiles = fs
 	.readdirSync("./events/")
 	.filter(file => file.endsWith(".js"));
@@ -35,9 +34,10 @@ for (const file of eventFiles) {
 	log.debug(`Loaded ${chalk.bold(eventName)} event.`);
 }
 
-process.on("unhandledRejection", error =>
-	log.error(`Uncaught Promise Rejection: ${error}`)
-);
+process.on("unhandledRejection", error => {
+	log.error(`Uncaught Promise Rejection`);
+	console.error(error);
+});
 
 client
 	.on("disconnect", () => log.warn("Bot is disconnecting..."))

@@ -1,10 +1,23 @@
 const Discord = require("discord.js");
-const { prefix, modRole } = require("../config.json");
+const settings = require("../utils/settings.js");
+const embed = require("../utils/embed.js");
 
 module.exports = (client, message) => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).split(/ +/);
+	let guildSettings;
+	if (message.channel.type === "dm") {
+		guildSettings = {
+			prefix: "!",
+			mod_role: null
+		};
+	} else {
+		guildSettings = settings.getSettings(message.guild.id);
+	}
+
+	if (!message.content.startsWith(guildSettings.prefix)) return;
+
+	const args = message.content.slice(guildSettings.prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
 	const command =
@@ -14,23 +27,36 @@ module.exports = (client, message) => {
 	if (!command) return;
 
 	if (command.guildOnly && message.channel.type !== "text") {
-		return message.channel.send(
-			"💔 **We can't do that here. Try it on the server instead!**"
-		);
+		return message.channel.send({
+			embed: embed("💔 **We can't do that here. Try it on the server instead!**")
+		});
 	}
 
-	if (command.modOnly && !message.member.roles.cache.has(modRole)) {
-		return message.channel.send(
-			"❣ **That command is restricted to moderators.**"
-		);
+	// if mod only and they not (mod or admin)
+	if (command.modOnly) {
+		let modStatus = false;
+
+		if (guildSettings.mod_role) {
+			message.member.roles.cache.each((role) => {
+				if (guildSettings.mod_role.includes(role.id)) modStatus = true;
+			});
+		}
+
+		if ( !(modStatus || message.member.hasPermission("ADMINISTRATOR")) ) {
+			return message.channel.send({
+				embed: embed("❣ **That command is restricted to moderators.**")
+			});
+		}
 	}
 
 	if (command.args && !args.length) {
 		let reply = `❣ **This command needs some arguments.**`;
 		if (command.usage) {
-			reply += `\nTo use it, type: \`${prefix}${command.name} ${command.usage}\``;
+			reply += `\nTo use it, type: \`${guildSettings.prefix}${command.name} ${command.usage}\``;
 		}
-		return message.channel.send(reply);
+		return message.channel.send({
+			embed: embed(reply)
+		});
 	}
 
 	const cooldowns = new Discord.Collection();
@@ -51,7 +77,9 @@ module.exports = (client, message) => {
 				timeout: 0,
 				reason: "Command called during cooldown. Deleted to prevent spam."
 			}).then(() => {
-				message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.**`)
+				message.channel.send({
+					embed: embed(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)
+				})
 					.then(msg => {
 						msg.delete({
 							timeout: 3000,
@@ -69,8 +97,8 @@ module.exports = (client, message) => {
 		command.execute(message, args);
 	} catch (error) {
 		log.error(error);
-		message.channel.send(
-			"💔 **I couldn't execute that command. Maybe ask for help?**"
-		);
+		message.channel.send({
+			embed: embed("💔 **I couldn't execute that command. Maybe ask for help?**")
+		});
 	}
 };

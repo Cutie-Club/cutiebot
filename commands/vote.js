@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const embed = require("../utils/embed.js");
 
 module.exports = {
 	name: "vote",
@@ -8,19 +8,14 @@ module.exports = {
 	guildOnly: true,
 	execute(message, args) {
 		if (!args[0]) {
-			return message.channel.send("❣ **You have to specify a topic!**");
+			return message.channel.send({
+				embed: embed("❣ **You have to specify a topic!**")
+			});
 		}
 
-		const embed = new Discord.MessageEmbed()
-			.setColor("#FF86F1")
-			.setTitle(`${message.author.username} has started a vote! 🗳`)
-			.setDescription(args.join(" "));
-
-		message.delete({
-			timeout: 0,
-			reason: "Vote command setup deleted."
-		});
-		message.channel.send({ embed }).then(msg => {
+		message.channel.send({
+			embed: embed(args.join(" ")).setTitle(`${message.author.username} has started a vote! 🗳`)
+		}).then(msg => {
 			msg.react("👍");
 			msg.react("👎");
 		});

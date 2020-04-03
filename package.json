@@ -34,5 +34,8 @@
     "run": [
       "lint"
     ]
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

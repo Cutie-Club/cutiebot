@@ -1,3 +1,5 @@
+const embed = require("../utils/embed.js");
+
 module.exports = {
 	name: "ban",
 	description: "Bans a very naughty user.",
@@ -6,29 +8,42 @@ module.exports = {
 	guildOnly: true,
 	modOnly: true,
 	execute(message) {
-		const taggedUser = message.mentions.users.first();
+		const user = message.mentions.members.first();
 
 		if (!message.mentions.users.size) {
-			return message.channel.send(
-				"❣ **You need to mention a user in order to ban them!**"
-			);
+			return message.channel.send({
+				embed: embed("❣ **You need to mention a user in order to ban them!**")
+			});
 		}
 
-		if (!message.guild.member(taggedUser).banable) {
-			return message.channel.send("💔 **I can't ban this user.**");
-		}
+		if (user) {
+			const member = message.guild.member(user);
+			if (!member) {
+				return message.channel.send({
+					embed: embed("❣ **I can't find that user. Are they in this server?**")
+				});
+			}
 
-		message.guild.members
-			.ban(taggedUser, {
+			if (!member.manageable) {
+				return message.channel.send({
+					embed: embed("❣ **I don't have the correct permissions to do that.**")
+				});
+			}
+
+			member.ban({
 				reason: `Banned by ${message.author.username} via command.`
 			})
-			.catch(err => {
-				log.error(err);
-				message.channel.send(
-					"💔 **There was an error trying to ban that user!**"
-				);
-			});
-
-		message.channel.send("💖 **Banned.** 🔨");
+				.then(() => {
+					message.channel.send({
+						embed: embed(`💖 **${user.tag} was banned.** 🔨`)
+					});
+				})
+				.catch(err => {
+					log.error(err);
+					message.channel.send({
+						embed: embed("💔 **There was an error trying to ban that user!**")
+					});
+				});
+		}
 	}
 };

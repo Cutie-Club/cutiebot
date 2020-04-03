@@ -1,3 +1,5 @@
+const embed = require("../utils/embed.js");
+
 module.exports = {
 	name: 'prune',
 	description: 'Prune up to 99 messages.',
@@ -10,15 +12,27 @@ module.exports = {
 		const amount = parseInt(args[0]) + 1;
 
 		if (isNaN(amount)) {
-			return message.channel.send('❣ **You need to specify a number of messages for me to delete!**');
+			return message.channel.send({
+				embed: embed('❣ **You need to specify a number of messages for me to delete!**')
+			});
 		} else if (amount <= 1 || amount > 100) {
-			return message.channel.send('❣ **You need to input a number between 1 and 99.**');
+			return message.channel.send({
+				embed: embed('❣ **You need to input a number between 1 and 99.**')
+			});
+		}
+
+		if (!message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES", false)) {
+			return message.channel.send({
+				embed: embed("❣️ **I don't have permission to manage messages in this channel.**")
+			});
 		}
 
 		message.channel.bulkDelete(amount, true)
 			.then(messages => {
-				log.info(`${message.author.username} deleted ${messages.size} messages in #${message.channel.name}, on ${message.guild.name}.`);
-				message.channel.send(`💖 **Deleted ${messages.size} message(s).** 🔥`).then(msg => {
+				log.info(`${message.author.username} deleted ${messages.size - 1} messages in #${message.channel.name}, on ${message.guild.name}.`);
+				message.channel.send({
+					embed: embed(`💖 **Deleted ${messages.size - 1} message(s).** 🔥`)
+				}).then(msg => {
 					msg.delete({
 						timeout: 5000,
 						reason: "Prune command invoked."
@@ -27,7 +41,9 @@ module.exports = {
 			})
 			.catch(err => {
 				log.error(err);
-				message.channel.send('💔 **There was an error trying to prune messages in this channel!**');
+				message.channel.send({
+					embed: embed('💔 **There was an error trying to prune messages in this channel!**')
+				});
 			});
 	},
 };
