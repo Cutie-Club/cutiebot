@@ -13,9 +13,8 @@ let db;
 try {
 	db = new Database(dbFullPath, { fileMustExist: true });
 } catch (error) {
-	log.warn("Database file does not exist");
-	log.info("Attempting to create database file");
-
+	log.warn("Database file does not exist!");
+	log.info("Attempting to create database file...");
 	db = new Database(dbFullPath);
 	db.pragma("journal_mode = WAL"); //set journaling mode
 }
@@ -37,6 +36,7 @@ db.prepare(
         guild_id TEXT NOT NULL,
         prefix TEXT NOT NULL DEFAULT '!',
         mod_role TEXT,
+        role_cmds INTEGER NOT NULL DEFAULT 0,
         role_blacklist TEXT,
         welcome_msgs INTEGER NOT NULL DEFAULT 0,
         welcome_channel_id TEXT);`

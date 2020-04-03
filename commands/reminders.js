@@ -38,14 +38,10 @@ module.exports = {
 			return message.channel.send({ embed: embed });
 		}
 
-		console.log(userReminders);
-
 		let validReminders = userReminders.filter(reminder => {
 			if (reminder.guild_id === guildID) return true;
 			return false;
 		});
-
-		console.log(validReminders);
 
 		if (validReminders.length) {
 			embed.setDescription(`💞 **${message.author.username}**, here are your upcoming reminders: ⏰`);

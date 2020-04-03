@@ -12,14 +12,15 @@ module.exports = client => {
 	})}`);
 	log.timeBetween("startup", "completed");
 
-	// should return a promise so we can check state, and how many settings we loaded
-	// and we should also check how many settings we had to create entries for
-	settings.init(client.guilds.cache.array());
-	log.info(`Loaded settings for x guilds.`);
+	const guildSettings = settings.init(client.guilds.cache.array());
 
-	client.user.setActivity(`${client.guilds.cache.size} server${client.guilds.cache.size !== 1 ? "s" : ""}.`, { type: "WATCHING" })
-		.then(activity => log.info(`Set activity to ${activity.activities[0].type} ${activity.activities[0].name}`))
-		.catch(log.error);
+	if (guildSettings.cached > 0) {
+		log.info(`Loaded settings for ${guildSettings.cached} server${guildSettings.cached != 1 ? "s": ""}.`);
+	}
+
+	if (guildSettings.created > 0) {
+		log.info(`Created settings for ${guildSettings.created} server${guildSettings.created != 1 ? "s": ""}.`);
+	}
 
 	// set up pending reminders
 	allReminders.forEach(async (reminder) => {
@@ -36,5 +37,12 @@ module.exports = client => {
 		);
 	});
 
-	log.info(`Set up ${allReminders.length} reminder${allReminders.size !== 1 ? "s": ""} from database.`); 
+	if (allReminders.length) {
+		log.info(`Set up ${allReminders.length} reminder${allReminders.size !== 1 ? "s": ""} from database.`);
+	}
+	
+	client.user.setActivity(`${client.guilds.cache.size} server${client.guilds.cache.size !== 1 ? "s" : ""}.`, { type: "WATCHING" })
+		.then(activity => log.info(`Set activity to ${activity.activities[0].type} ${activity.activities[0].name}`))
+		.catch(log.error);
+
 };

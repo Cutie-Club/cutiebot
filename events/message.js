@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const settings = require("../utils/settings.js");
+const embed = require("../utils/embed.js");
 
 module.exports = (client, message) => {
 	if (message.author.bot) return;
@@ -26,16 +27,26 @@ module.exports = (client, message) => {
 	if (!command) return;
 
 	if (command.guildOnly && message.channel.type !== "text") {
-		return message.channel.send(
-			"💔 **We can't do that here. Try it on the server instead!**"
-		);
+		return message.channel.send({
+			embed: embed("💔 **We can't do that here. Try it on the server instead!**")
+		});
 	}
 
 	// if mod only and they not (mod or admin)
-	if (command.modOnly && !(message.member.roles.cache.has(guildSettings.mod_role) || message.member.hasPermission("ADMINISTRATOR"))) {
-		return message.channel.send(
-			"❣ **That command is restricted to moderators.**"
-		);
+	if (command.modOnly) {
+		let modStatus = false;
+
+		if (guildSettings.mod_role) {
+			message.member.roles.cache.each((role) => {
+				if (guildSettings.mod_role.includes(role.id)) modStatus = true;
+			});
+		}
+
+		if ( !(modStatus || message.member.hasPermission("ADMINISTRATOR")) ) {
+			return message.channel.send({
+				embed: embed("❣ **That command is restricted to moderators.**")
+			});
+		}
 	}
 
 	if (command.args && !args.length) {
@@ -43,7 +54,9 @@ module.exports = (client, message) => {
 		if (command.usage) {
 			reply += `\nTo use it, type: \`${guildSettings.prefix}${command.name} ${command.usage}\``;
 		}
-		return message.channel.send(reply);
+		return message.channel.send({
+			embed: embed(reply)
+		});
 	}
 
 	const cooldowns = new Discord.Collection();
@@ -64,7 +77,9 @@ module.exports = (client, message) => {
 				timeout: 0,
 				reason: "Command called during cooldown. Deleted to prevent spam."
 			}).then(() => {
-				message.channel.send(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)
+				message.channel.send({
+					embed: embed(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)
+				})
 					.then(msg => {
 						msg.delete({
 							timeout: 3000,
@@ -82,8 +97,8 @@ module.exports = (client, message) => {
 		command.execute(message, args);
 	} catch (error) {
 		log.error(error);
-		message.channel.send(
-			"💔 **I couldn't execute that command. Maybe ask for help?**"
-		);
+		message.channel.send({
+			embed: embed("💔 **I couldn't execute that command. Maybe ask for help?**")
+		});
 	}
 };

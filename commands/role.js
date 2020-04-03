@@ -1,4 +1,5 @@
-const { roleBlacklist } = require("../config.json");
+const embed = require("../utils/embed.js");
+const settings = require("../utils/settings.js");
 
 module.exports = {
 	name: "role",
@@ -7,9 +8,18 @@ module.exports = {
 	cooldown: 5,
 	guildOnly: true,
 	execute(message, args) {
+		const guildSettings = settings.getSettings(message.guild.id);
 		let reason = "Requested via command.";
 		let userInput = args.join(" ");
 		let chosenRole;
+
+		if (!guildSettings.role_cmds) {
+			return message.channel.send({ embed: embed("❣ **Role commands are disabled.**") });
+		}
+
+		if (!message.channel.permissionsFor(message.client.user).has("MANAGE_ROLES", false)) {
+			return message.channel.send({ embed: embed("❣ **I don't have permission to manage roles.**") });
+		}
 
 		for (let role of message.guild.roles.cache.values()) {
 			if (userInput.toLowerCase() === role.name.toLowerCase()) {
@@ -18,30 +28,32 @@ module.exports = {
 		}
 
 		if (!userInput) {
-			return message.channel.send("❣ **You have to specify a role.**");
+			return message.channel.send({ embed: embed("❣ **You have to specify a role.**") } );
 		}
 
 		if (!chosenRole) {
-			return message.channel.send(
-				"❣ **I can't find that role. Did you type it correctly?**"
-			);
+			return message.channel.send({ embed:
+				embed("❣ **I can't find that role. Did you type it correctly?**")
+			});
 		}
 
-		if (roleBlacklist.includes(chosenRole.name)) {
-			return message.channel.send("💔 **That role isn't self-assignable.**");
+		if (guildSettings.role_blacklist) {
+			if (guildSettings.role_blacklist.includes(chosenRole.name)) {
+				return message.channel.send({ embed: embed("💔 **That role isn't self-assignable.**") });
+			}
 		}
 
 		if (message.member.roles.cache.has(chosenRole.id)) {
 			message.member.roles
 				.remove(chosenRole, reason)
 				.then(
-					message.channel.send(`💖 \`${chosenRole.name}\` **role removed.**`)
+					message.channel.send({ embed: embed(`💖 \`${chosenRole.name}\` **role removed.**`) })
 				);
 		} else {
 			message.member.roles
 				.add(chosenRole, reason)
 				.then(
-					message.channel.send(`💖 \`${chosenRole.name}\` **role added.**`)
+					message.channel.send({ embed: embed(`💖 \`${chosenRole.name}\` **role added.**`) })
 				);
 		}
 	}

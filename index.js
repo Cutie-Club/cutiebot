@@ -3,9 +3,6 @@ loggerInit();
 log.time("startup");
 log.info("Starting Cutiebot!");
 
-// cache settings;
-// const settings = require("./utils/settings.js");
-
 // import discord.js, token, and set up client
 const Discord = require("discord.js");
 const { token } = require("./config.json");
@@ -41,9 +38,10 @@ for (const file of eventFiles) {
 }
 
 // error handling
-process.on("unhandledRejection", error =>
-	log.error(`Uncaught Promise Rejection: ${error}`)
-);
+process.on("unhandledRejection", error => {
+	log.error(`Uncaught Promise Rejection`);
+	console.error(error);
+});
 
 client
 	.on("disconnect", () => log.warn("Bot is disconnecting..."))

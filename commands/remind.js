@@ -1,10 +1,10 @@
-const Discord = require("discord.js");
 const ms = require('ms');
 const reminders = require("../utils/reminders.js");
+const embed = require("../utils/embed.js");
 
 module.exports = {
 	name: "remind",
-	description: "",
+	description: "Create reminders",
 	aliases: ["reminder", "remindme"],
 	usage: '<time> <reminder>',
 	cooldown: 5,
@@ -19,20 +19,22 @@ module.exports = {
 		}
 
 		if (!content) {
-			return message.channel.send("❣ **You need to tell me what to remind you about!**");
+			return message.channel.send({
+				embed: embed("❣ **You need to tell me what to remind you about!**")
+			});
 		}
 
 		if (!duration) {
-			return message.channel.send("❣ **You need to specify a time for me to remind you about that.**");
+			return message.channel.send({
+				embed: embed("❣ **You need to specify a time for me to remind you about that.**")
+			});
 		}
 		
 		reminders.registerReminder(message.author, message.channel, message.guild, content, duration);
 
-		const reminderSet = new Discord.MessageEmbed()
-			.setColor("#36393f")
-			.setDescription(`💞 **${message.author.username}**, I'll remind you in ${ms(duration, { long: true })}: **${content}**. ⏰`);
-
 		// tell user their reminder was set
-		message.channel.send({ embed: reminderSet });
+		message.channel.send({
+			embed: embed(`💞 **${message.author.username}**, I'll remind you in ${ms(duration, { long: true })}: **${content}**. ⏰`)
+		});
 	}
 };

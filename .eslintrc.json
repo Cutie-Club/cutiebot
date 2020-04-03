@@ -13,7 +13,7 @@
   },
   "ignorePatterns": ["node_modules/"],
   "rules": {
-    "indent": ["error", "tab"],
+    "indent": ["error", "tab", { "SwitchCase": 1 }],
     "no-console": "off",
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-var": "error",

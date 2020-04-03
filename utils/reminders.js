@@ -1,5 +1,6 @@
-const Discord = require("discord.js");
 const db = require("../utils/database.js");
+const embed = require("../utils/embed.js");
+
 const reminderObject = {};
 
 const createReminder = db.prepare(`
@@ -9,18 +10,15 @@ const createReminder = db.prepare(`
     guild_id,
     message,
     start_time,
-    end_time) VALUES (?, ?, ?, ?, ?, ?)`
+		end_time
+	) VALUES (?, ?, ?, ?, ?, ?)`
 );
 
 const removeReminder = db.prepare("DELETE FROM reminders WHERE id = (?)");
 const removeUserReminder = db.prepare("DELETE FROM reminders WHERE id = (?) AND user_id = (?)");
 
-const reminderEmbed = (reminderContent) => new Discord.MessageEmbed()
-	.setColor("#36393f")
-	.setDescription(`⏰ ${reminderContent}`);
-
-const messageFunction = (channel, user, content) => channel.send(`💖 **${user.toString()}**, here's your reminder:`, {
-	embed: reminderEmbed(content)
+const messageFunction = (channel, user, content) => channel.send(`💖 **${user.toString()}, here's your reminder:**`, {
+	embed: embed(`⏰ ${content}`)
 });
     
 module.exports = {
