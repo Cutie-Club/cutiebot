@@ -6,6 +6,7 @@ module.exports = {
 	cooldown: 0,
 	guildOnly: true,
 	modOnly: true,
+	hidden: true,
 	execute(message, args) {
 		// return silently if not Sierra#0001
 		// due to the nature of eval

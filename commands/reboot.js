@@ -6,6 +6,7 @@ module.exports = {
 	cooldown: 0,
 	guildOnly: false,
 	modOnly: true,
+	hidden: true,
 	execute(message) {
 		// return silently if not Sierra#0001
 		if (message.author.id !== "190917462265430016") return;

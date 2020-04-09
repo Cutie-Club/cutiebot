@@ -8,17 +8,38 @@ module.exports = {
 	usage: "[command name]",
 	cooldown: 5,
 	execute(message, args) {
-		let guildSettings = {};
-		if (message.channel.type !== "dm") guildSettings = settings.getSettings(message.guild.id);
 		const { commands } = message.client;
+		let guildSettings = {};
+		let modStatus = false;
+		if (message.channel.type !== "dm") {
+			guildSettings = settings.getSettings(message.guild.id);
+		}
+		
+		if (guildSettings.mod_role) {
+			message.member.roles.cache.each((role) => {
+				if (guildSettings.mod_role.includes(role.id)) modStatus = true;
+			});
+		}
 
 		if (!args.length) {
 			const helpEmbed = embed(`You can send \`!help [command name]\` to get info on a specific command!`);
 			helpEmbed.setTitle("💖 **Here's a list of all my commands:**");
+
+			let commandList = [];
 			
 			commands
-				.filter(command => !command.modOnly)
-				.forEach(command => helpEmbed.addField(`**${command.name}**`, command.description || "\u200b"));
+				.filter(command => {
+					if (command.hidden) return false;
+					if (command.modOnly && !(modStatus || message.member.hasPermission("ADMINISTRATOR"))) return false;
+					return true;
+				})
+				.forEach(command => {
+					commandList.push(`**${command.name}${command.modOnly ? "*" : ""}** \u2013 ${command.description  || "\u200b"}`);
+				});
+
+			if (modStatus || message.member.hasPermission("ADMINISTRATOR")) commandList.push("\nMod-only commands are marked with an asterisk.");
+
+			helpEmbed.addField(`Current commands:`, commandList.join(`\n`));
 
 			return message.author
 				.send({
@@ -53,6 +74,10 @@ module.exports = {
 
 		const commandEmbed = embed(`**Command:** \`${command.name}\``);
 		commandEmbed.setTitle(`💖 **Cutiebot Help~**`);
+
+		if (command.modOnly) {
+			commandEmbed.addField("**Note:**", "This command is restricted to Moderators, and users with the Administrator permission.");
+		}
 
 		if (command.aliases) {
 			commandEmbed.addField("**Aliases:**", `\`${command.aliases.join("`, `")}\``);
