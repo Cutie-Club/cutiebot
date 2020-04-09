@@ -5,7 +5,6 @@ const ms = require('ms');
 module.exports = {
 	name: "reminders",
 	description: "Shows all reminders. Optionally, clears reminders.",
-	aliases: [],
 	usage: '<clear> [id]',
 	cooldown: 5,
 	guildOnly: false,

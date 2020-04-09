@@ -22,16 +22,32 @@ module.exports = {
 		}
 
 		assignableRoles = assignableRoles.filter(role => {
+			if (role.name === "@everyone" || role.name === "Cutiebot") return false;
+			return true;
+		});
+
+		const rolesEmbed = embed("You can assign or remove these roles with the `!role` command.")
+			.setTitle(`💖 **Here's a list of all the assignable roles:**`);
+
+		let roleList = [];
+		assignableRoles.forEach((role) => {
+			roleList.push(`**${role.name}** \u2013 ${role.id}`);
+		});
+
+		rolesEmbed.addField(`Roles in ${message.guild.name}:`, roleList.join(`\n`));
+
+		let userRoles = Array.from(message.member.roles.cache.values());
+		let cleanedUserRoles = userRoles.filter(role => {
 			if (role.name === "@everyone") return false;
 			return true;
 		});
 
-		const rolesEmbed = embed("Roles are mapped with their IDs, so you can blacklist them in settings.")
-			.setTitle(`💖 **Here's a list of all the assignable roles:**`);
-
-		assignableRoles.forEach((role) => {
-			rolesEmbed.addField(role.id, `**${role.name}**`);
-		});
+		if (cleanedUserRoles.length) {
+			rolesEmbed.addField(`Your roles:`, `${cleanedUserRoles.join(", ")}`);
+		} else {
+			rolesEmbed.addField(`Your roles:`, "You don't have any assigned roles.");
+		}
+		
 
 		return message.channel.send({ embed: rolesEmbed });
 	}
