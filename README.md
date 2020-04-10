@@ -25,7 +25,7 @@ Cutiebot requires the following permissions;
 
 # Contributing
 
-If you would like to open a PR, please check [the contributing guide](https://github.com/amberstarlight/cutiebot/blob/master/CONTRIBUTING.md).
+If you would like to open a PR, please check [the contributing guide](https://github.com/Cutie-Club/cutiebot/blob/master/CONTRIBUTING.md).
 
 ## Development Requirements
 
@@ -42,6 +42,4 @@ In your terminal, run the following command;
 git clone https://github.com/Cutie-Club/cutiebot.git
 ```
 
-Once finished, run `cd cutiebot`, followed by `npm install`.
-
-You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
+Once finished, run `cd cutiebot`, followed by `npm install`. You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
