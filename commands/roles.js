@@ -22,7 +22,8 @@ module.exports = {
 		}
 
 		assignableRoles = assignableRoles.filter(role => {
-			if (role.name === "@everyone" || role.name === "Cutiebot") return false;
+			if (role.name === "@everyone") return false;
+			if (role.managed) return false;
 			return true;
 		});
 
