@@ -26,7 +26,7 @@ module.exports = {
 			return true;
 		});
 
-		const rolesEmbed = embed("You can assign or remove these roles with the `!role` command.")
+		const rolesEmbed = embed(`You can assign or remove these roles with the \`${guildSettings.prefix}role\` command.`)
 			.setTitle(`💖 **Here's a list of all the assignable roles:**`);
 
 		let roleList = [];
