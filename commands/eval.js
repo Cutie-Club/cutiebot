@@ -27,7 +27,7 @@ module.exports = {
 			const code = args.join(" ");
 			let evaled = eval(code);
 			if (typeof evaled !== "string") evaled = require("util").inspect(evaled);
-			data.push(clean(evaled), { code: "js" });
+			data.push(clean(evaled));
 
 			log.debug(data);
 			message.channel.send(data, {
