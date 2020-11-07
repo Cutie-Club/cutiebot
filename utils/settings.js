@@ -24,8 +24,9 @@ const modifyArray = (flag, array, item, collection) => {
 	if (Array.isArray(item)) itemArray = item.slice();
 	let adding;
 	itemArray.forEach(item => {
-		idChecker(collection, item);
-		let itemExists = array.includes(item);
+		const itemExists = array.includes(item);
+		if (!itemExists) idChecker(collection, item);
+		
 		if (keyWords.add.includes(flag)) {
 			adding = true;
 			if (itemExists) throw `\`${item}\` already listed.`;
