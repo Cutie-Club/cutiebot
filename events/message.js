@@ -32,7 +32,6 @@ module.exports = (client, message) => {
 		});
 	}
 
-	// if mod only and they not (mod or admin)
 	if (command.modOnly) {
 		let modStatus = false;
 
@@ -92,6 +91,8 @@ module.exports = (client, message) => {
 
 	timestamps.set(message.author.id, now);
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
+	log.info(`In ${message.guild}, ${message.author.tag} used '${command.name}'.`);
 
 	try {
 		command.execute(message, args);
