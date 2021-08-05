@@ -7,7 +7,9 @@ module.exports = (client, guild) => {
 		log.info(`Joined ${guild.name}, owned by ${owner.user.username}.`);
 
 		db.prepare("INSERT INTO settings (guild_id) VALUES (?);").run(guild.id);
-		settings.init(client.guilds.cache.array());
+		
+		const currentGuilds = Array.from(client.guilds.cache.values());
+		settings.init(currentGuilds);
 
 		log.info(`Created settings for ${guild.name}`);
 

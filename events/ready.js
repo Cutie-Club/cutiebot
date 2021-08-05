@@ -12,7 +12,9 @@ module.exports = client => {
 	})}`);
 	log.timeBetween("startup", "completed");
 
-	const guildSettings = settings.init(client.guilds.cache.array());
+	//TODO: move all this to live in settings.js and handle caching there
+	const currentGuilds = Array.from(client.guilds.cache.values());
+	const guildSettings = settings.init(currentGuilds);
 
 	if (guildSettings.cached > 0) {
 		log.info(`Loaded settings for ${guildSettings.cached} server${guildSettings.cached != 1 ? "s": ""}.`);
@@ -41,8 +43,5 @@ module.exports = client => {
 		log.info(`Set up ${allReminders.length} reminder${allReminders.size !== 1 ? "s": ""} from database.`);
 	}
 	
-	client.user.setActivity(`${client.guilds.cache.size} server${client.guilds.cache.size !== 1 ? "s" : ""}.`, { type: "WATCHING" })
-		.then(activity => log.info(`Set activity to ${activity.activities[0].type} ${activity.activities[0].name}`))
-		.catch(log.error);
-
+	client.user.setActivity(`${client.guilds.cache.size} server${client.guilds.cache.size !== 1 ? "s" : ""}.`, { type: "WATCHING" });
 };

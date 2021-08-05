@@ -13,7 +13,7 @@ module.exports = {
 
 		if (!args[0]) {
 			return message.channel.send({
-				embed: embed("❣ **You need to tell me what to say!**")
+				embeds: [embed("❣ **You need to tell me what to say!**")]
 			});
 		}
 
@@ -26,12 +26,12 @@ module.exports = {
 
 			if (!perms) {
 				return message.channel.send({
-					embed: embed("💔 **I can't send a message in that channel.**")
+					embeds: [embed("💔 **I can't send a message in that channel.**")]
 				});
 			} else {
 				channelID.send(thingToSay).then(() => {
 					message.channel.send({
-						embed: embed("💖 **Message sent.**")
+						embeds: [embed("💖 **Message sent.**")]
 					});
 				});
 			}

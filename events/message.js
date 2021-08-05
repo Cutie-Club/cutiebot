@@ -28,7 +28,7 @@ module.exports = (client, message) => {
 
 	if (command.guildOnly && message.channel.type !== "text") {
 		return message.channel.send({
-			embed: embed("💔 **We can't do that here. Try it on the server instead!**")
+			embeds: [embed("💔 **We can't do that here. Try it on the server instead!**")]
 		});
 	}
 
@@ -43,7 +43,7 @@ module.exports = (client, message) => {
 
 		if ( !(modStatus || message.member.hasPermission("ADMINISTRATOR")) ) {
 			return message.channel.send({
-				embed: embed("❣ **That command is restricted to moderators.**")
+				embeds: [embed("❣ **That command is restricted to moderators.**")]
 			});
 		}
 	}
@@ -54,7 +54,7 @@ module.exports = (client, message) => {
 			reply += `\nTo use it, type: \`${guildSettings.prefix}${command.name} ${command.usage}\``;
 		}
 		return message.channel.send({
-			embed: embed(reply)
+			embeds: [embed(reply)]
 		});
 	}
 
@@ -77,7 +77,7 @@ module.exports = (client, message) => {
 				reason: "Command called during cooldown. Deleted to prevent spam."
 			}).then(() => {
 				message.channel.send({
-					embed: embed(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)
+					embeds: [embed(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)]
 				})
 					.then(msg => {
 						msg.delete({
@@ -99,7 +99,7 @@ module.exports = (client, message) => {
 	} catch (error) {
 		log.error(error);
 		message.channel.send({
-			embed: embed("💔 **I couldn't execute that command. Maybe ask for help?**")
+			embeds: [embed("💔 **I couldn't execute that command. Maybe ask for help?**")]
 		});
 	}
 };

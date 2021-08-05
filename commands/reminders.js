@@ -22,7 +22,7 @@ module.exports = {
 
 		if (!validReminders.length) {
 			return message.channel.send({
-				embed: embed(`💖 **${message.author.username}**, you don't have any upcoming reminders! ⏰`)
+				embeds: [embed(`💖 **${message.author.username}**, you don't have any upcoming reminders! ⏰`)]
 			});
 		}
 
@@ -32,12 +32,12 @@ module.exports = {
 
 				if (!result) {
 					return message.channel.send({
-						embed: embed(`❣️ **${message.author.username}**, ${args[1]} could not be cleared. ⏰`)
+						embeds: [embed(`❣️ **${message.author.username}**, ${args[1]} could not be cleared. ⏰`)]
 					});
 				}
 
 				return message.channel.send({
-					embed: embed(`💞 **${message.author.username}**, I cleared reminder **${args[1]}**. ⏰`)
+					embeds: [embed(`💞 **${message.author.username}**, I cleared reminder **${args[1]}**. ⏰`)]
 				});
 			}
 
@@ -49,7 +49,7 @@ module.exports = {
 			});
 			
 			return message.channel.send({
-				embed: clearEmbed
+				embeds: [clearEmbed]
 			});
 		}
 
@@ -61,7 +61,7 @@ module.exports = {
 			});
 			
 			return message.channel.send({
-				embed: reminderEmbed
+				embeds: [reminderEmbed]
 			});
 		}
 	}

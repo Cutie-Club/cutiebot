@@ -67,7 +67,7 @@ describe("!say command executes correctly", () => {
 	test("If user input is not provided, the bot informs the user", () => {
 		say.execute(fakeMessage, []);
 		expect(fakeMessage.channel.send).toHaveBeenCalledWith({
-			embed: embed("❣ **You need to tell me what to say!**")
+			embeds: [embed("❣ **You need to tell me what to say!**")]
 		});
 	});
 
@@ -79,7 +79,7 @@ describe("!say command executes correctly", () => {
 
 		expect(fakeMessage.mentions.channels.first().send).toHaveBeenCalledWith("how do i make the bot work");
 		expect(fakeMessage.channel.send).toHaveBeenCalledWith({
-			embed: embed("💖 **Message sent.**")
+			embeds: [embed("💖 **Message sent.**")]
 		});
 	});
 
@@ -98,7 +98,7 @@ describe("!say command executes correctly", () => {
 
 		await say.execute(fakeMessageClone, fakeArgsClone);
 		expect(fakeMessageClone.channel.send).toHaveBeenCalledWith({
-			embed: embed("💔 **I can't send a message in that channel.**")
+			embeds: [embed("💔 **I can't send a message in that channel.**")]
 		});
 	});
 });

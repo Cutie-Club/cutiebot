@@ -15,13 +15,13 @@ module.exports = {
 
 		if (!guildSettings.role_cmds) {
 			return message.channel.send({
-				embed: embed("❣ **Role commands are disabled.**")
+				embeds: [embed("❣ **Role commands are disabled.**")]
 			});
 		}
 		
 		if (!message.channel.permissionsFor(message.client.user).has("MANAGE_ROLES", false)) {
 			return message.channel.send({
-				embed: embed("❣ **I don't have permission to manage roles.**")
+				embeds: [embed("❣ **I don't have permission to manage roles.**")]
 			});
 		}
 
@@ -33,24 +33,24 @@ module.exports = {
 		
 		if (guildSettings.role_blacklist) {
 			if (guildSettings.role_blacklist.includes(chosenRole.id)) {
-				return message.channel.send({ embed: embed("💔 **That role isn't self-assignable.**") });
+				return message.channel.send({ embeds: [embed("💔 **That role isn't self-assignable.**")] });
 			}
 		}
 
 		if (!userInput) {
 			return message.channel.send({
-				embed: embed("❣ **You have to specify a role.**")
+				embeds: [embed("❣ **You have to specify a role.**")]
 			});
 		}
 
 		if (!chosenRole) {
 			return message.channel.send({
-				embed: embed("❣ **I can't find that role. Did you type it correctly?**")
+				embeds: [embed("❣ **I can't find that role. Did you type it correctly?**")]
 			});
 		}
 
 		const failedPermission = () => message.channel.send({
-			embed: embed("💔 **I don't have the correct permissions to do that.**")
+			embeds: [embed("💔 **I don't have the correct permissions to do that.**")]
 		});
 
 		if (message.member.roles.cache.has(chosenRole.id)) {
@@ -58,7 +58,7 @@ module.exports = {
 				.remove(chosenRole, reason)
 				.then(() => {
 					message.channel.send({
-						embed: embed(`💖 \`${chosenRole.name}\` **role removed.**`)
+						embeds: [embed(`💖 \`${chosenRole.name}\` **role removed.**`)]
 					});
 				})
 				.catch(failedPermission);
@@ -67,7 +67,7 @@ module.exports = {
 				.add(chosenRole, reason)
 				.then(() => {
 					message.channel.send({
-						embed: embed(`💖 \`${chosenRole.name}\` **role added.**`)
+						embeds: [embed(`💖 \`${chosenRole.name}\` **role added.**`)]
 					});
 				})
 				.catch(failedPermission);

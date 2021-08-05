@@ -37,7 +37,7 @@ module.exports = {
 			});
 		} catch (err) {
 			message.channel.send({
-				embed: embed(`💔 **ERROR** \`\`\`xl\n${clean(err)}\n\`\`\``)
+				embeds: [embed(`💔 **ERROR** \`\`\`xl\n${clean(err)}\n\`\`\``)]
 			});
 		}
 	}

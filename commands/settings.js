@@ -55,14 +55,14 @@ module.exports = {
 			settingArray.forEach(([settingName, settingValue]) => {
 				settingsEmbed.addField(`**${settingsPrettifier[settingName]}** (${settingName})`, `\`\`\`js\n${transformer(settingName, settingValue, message)}\`\`\``);
 			});
-			return message.channel.send({ embed: settingsEmbed });
+			return message.channel.send({ embeds: [settingsEmbed] });
 		}
 
 		if (args.length >= 1) { // setting supplied
 			const setting = args[0];
 			if (!Object.keys(guildSettings).includes(setting)) {
 				return message.channel.send({
-					embed: embed("❣ That setting is not configurable, or doesn't exist.")
+					embeds: [embed("❣ That setting is not configurable, or doesn't exist.")]
 				});
 			}
 
@@ -73,18 +73,18 @@ module.exports = {
 					const errorEmbed = embed("❣ **There was an error updating that setting.**");
 					errorEmbed.addField("Error:", result);
 					return message.channel.send({
-						embed: errorEmbed
+						embeds: [errorEmbed]
 					});
 				}
 
 				guildSettings = settings.getSettings(message.guild.id);
 				return message.channel.send({
-					embed: embed(`💖 **Settings updated:** set ${settingsPrettifier[setting]} to \`${transformer(setting, guildSettings[setting], message)}\``)
+					embeds: [embed(`💖 **Settings updated:** set ${settingsPrettifier[setting]} to \`${transformer(setting, guildSettings[setting], message)}\``)]
 				});
 			}
 
 			return message.channel.send({
-				embed: embed(`💖 **Currently, ${(settingsPrettifier[setting]).toLowerCase()} is \`${transformer(setting, guildSettings[setting], message)}\`**`)
+				embeds: [embed(`💖 **Currently, ${(settingsPrettifier[setting]).toLowerCase()} is \`${transformer(setting, guildSettings[setting], message)}\`**`)]
 			});
 		}
 	}	

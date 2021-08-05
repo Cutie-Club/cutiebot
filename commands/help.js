@@ -43,11 +43,11 @@ module.exports = {
 
 			return message.author
 				.send({
-					embed: helpEmbed
+					embeds: [helpEmbed]
 				}).then(() => {
 					if (message.channel.type === "dm") return;
 					message.channel.send({
-						embed: embed("💖 **I've sent you a message with all my commands!~**")
+						embeds: [embed("💖 **I've sent you a message with all my commands!~**")]
 					});
 				})
 				.catch(error => {
@@ -56,7 +56,7 @@ module.exports = {
 						error
 					);
 					message.channel.send({
-						embed: embed("💔 **I wish I could tell you, but I can't message you. Change that, or ask for help!**")
+						embeds: [embed("💔 **I wish I could tell you, but I can't message you. Change that, or ask for help!**")]
 					});
 				});
 		}
@@ -68,7 +68,7 @@ module.exports = {
 
 		if (!command) {
 			return message.channel.send({
-				embed: embed("❣ **I'm sorry, I don't know that one.**")
+				embeds: [embed("❣ **I'm sorry, I don't know that one.**")]
 			});
 		}
 
@@ -94,7 +94,7 @@ module.exports = {
 		commandEmbed.addField("**Cooldown:**", `\`${command.cooldown || 3}\` second${command.cooldown != 1 ? "s" : ""}.`);
 
 		message.channel.send({
-			embed: commandEmbed
+			embeds: [commandEmbed]
 		});
 	}
 };

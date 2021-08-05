@@ -11,7 +11,7 @@ module.exports = {
 		const guildSettings = settings.getSettings(message.guild.id);
 
 		if (!guildSettings.role_cmds) {
-			return message.channel.send({ embed: embed("❣ **Role commands are disabled.**") });
+			return message.channel.send({ embeds: [embed("❣ **Role commands are disabled.**")] });
 		}
 
 		let roles = Array.from(message.guild.roles.cache.values());
@@ -50,6 +50,6 @@ module.exports = {
 		}
 		
 
-		return message.channel.send({ embed: rolesEmbed });
+		return message.channel.send({ embeds: [rolesEmbed] });
 	}
 };

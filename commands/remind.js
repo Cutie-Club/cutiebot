@@ -20,13 +20,13 @@ module.exports = {
 
 		if (!content) {
 			return message.channel.send({
-				embed: embed("❣ **You need to tell me what to remind you about!**")
+				embeds: [embed("❣ **You need to tell me what to remind you about!**")]
 			});
 		}
 
 		if (!duration) {
 			return message.channel.send({
-				embed: embed("❣ **You need to specify a time for me to remind you about that.**")
+				embeds: [embed("❣ **You need to specify a time for me to remind you about that.**")]
 			});
 		}
 		
@@ -34,7 +34,7 @@ module.exports = {
 
 		// tell user their reminder was set
 		message.channel.send({
-			embed: embed(`💞 **${message.author.username}**, I'll remind you in ${ms(duration, { long: true })}: **${content}**. ⏰`)
+			embeds: [embed(`💞 **${message.author.username}**, I'll remind you in ${ms(duration, { long: true })}: **${content}**. ⏰`)]
 		});
 	}
 };

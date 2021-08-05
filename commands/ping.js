@@ -7,10 +7,10 @@ module.exports = {
 	guildOnly: false,
 	execute(message) {
 		message.channel.send({
-			embed: embed(`**💖 Ping!**`).addFields(
+			embeds: [embed(`**💖 Ping!**`).addFields(
 				{ name: `Bot Latency`, value: `\`${Date.now() - message.createdTimestamp}ms\`` },
 				{ name: `API Latency`, value: `\`${message.client.ws.ping}ms\`` }
-			)
+			)]
 		});
 	}
 };

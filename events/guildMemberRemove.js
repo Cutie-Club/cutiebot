@@ -10,6 +10,6 @@ module.exports = (client, member) => {
 	const welcomeChannel = member.guild.channels.cache.get(guildSettings.welcome_channel_id);
 
 	welcomeChannel.send({
-		embed: embed(`**${member.user.username} has left the server.** 💔`)
+		embeds: [embed(`**${member.user.username} has left the server.** 💔`)]
 	});
 };

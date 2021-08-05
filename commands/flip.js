@@ -11,12 +11,12 @@ module.exports = {
 		};
 
 		message.channel.send({
-			embed: embed(`💞 **Flipping a coin...**`)
+			embeds: [embed(`💞 **Flipping a coin...**`)]
 		})
 		  .then(msg => {
 		    setTimeout(() => {
 		      msg.edit({
-						embed: embed(`💖 **${flip()}!**`)
+						embeds: [embed(`💖 **${flip()}!**`)]
 					});
 		    }, 2000);
 			});
