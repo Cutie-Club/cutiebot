@@ -17,7 +17,7 @@
     "prod:start": "pm2 start index.js --name \"Cutiebot\""
   },
   "dependencies": {
-    "better-sqlite3": "^6.0.1",
+    "better-sqlite3": "^7.4.3",
     "chalk": "^3.0.0",
     "discord.js": "github:discordjs/discord.js",
     "ms": "^2.1.2",
