@@ -4,7 +4,7 @@ log.time("startup");
 log.info("Starting Cutiebot!");
 
 const Discord = require("discord.js");
-const { token } = require("./config.json");
+const token = process.env.DISCORD_TOKEN;
 const { Client, Intents } = require('discord.js');
 
 const client = new Client({

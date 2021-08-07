@@ -1,5 +1,0 @@
-{
-	"token": "YOUR-TOKEN-HERE",
-	"dbFolder": "./database",
-	"dbFile": "cutiebot.db"
-}
