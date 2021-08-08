@@ -11,7 +11,7 @@ module.exports = {
 		const { commands } = message.client;
 		let guildSettings = {};
 		let modStatus = false;
-		if (message.channel.type !== "dm") {
+		if (message.channel.type !== "DM") {
 			guildSettings = settings.getSettings(message.guild.id);
 		}
 		
@@ -30,14 +30,14 @@ module.exports = {
 			commands
 				.filter(command => {
 					if (command.hidden) return false;
-					if (command.modOnly && !(modStatus || message.member.hasPermission("ADMINISTRATOR"))) return false;
+					if (command.modOnly && !(modStatus || message.member.permissions.has("ADMINISTRATOR"))) return false;
 					return true;
 				})
 				.forEach(command => {
 					commandList.push(`**${command.name}${command.modOnly ? "*" : ""}** \u2013 ${command.description  || "\u200b"}`);
 				});
 
-			if (modStatus || message.member.hasPermission("ADMINISTRATOR")) commandList.push("\nMod-only commands are marked with an asterisk.");
+			if (modStatus || message.member.permissions.has("ADMINISTRATOR")) commandList.push("\nMod-only commands are marked with an asterisk.");
 
 			helpEmbed.addField(`Current commands:`, commandList.join(`\n`));
 
@@ -45,7 +45,7 @@ module.exports = {
 				.send({
 					embeds: [helpEmbed]
 				}).then(() => {
-					if (message.channel.type === "dm") return;
+					if (message.channel.type === "DM") return;
 					message.channel.send({
 						embeds: [embed("💖 **I've sent you a message with all my commands!~**")]
 					});

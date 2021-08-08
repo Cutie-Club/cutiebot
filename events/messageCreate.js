@@ -6,7 +6,7 @@ module.exports = (client, message) => {
 	if (message.author.bot) return;
 
 	let guildSettings;
-	if (message.channel.type === "dm") {
+	if (message.channel.type === "DM") {
 		guildSettings = {
 			prefix: "!",
 			mod_role: null
@@ -26,7 +26,7 @@ module.exports = (client, message) => {
 
 	if (!command) return;
 
-	if (command.guildOnly && message.channel.type !== "text") {
+	if (command.guildOnly && message.channel.type !== "GUILD_TEXT") {
 		return message.channel.send({
 			embeds: [embed("💔 **We can't do that here. Try it on the server instead!**")]
 		});
@@ -41,7 +41,7 @@ module.exports = (client, message) => {
 			});
 		}
 
-		if ( !(modStatus || message.member.hasPermission("ADMINISTRATOR")) ) {
+		if ( !(modStatus || message.member.permissions.has("ADMINISTRATOR")) ) {
 			return message.channel.send({
 				embeds: [embed("❣ **That command is restricted to moderators.**")]
 			});

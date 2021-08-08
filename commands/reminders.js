@@ -11,8 +11,8 @@ module.exports = {
 	execute(message, args) {
 		const userReminders = reminders.getReminders(message.author.id);
 
-		let guildID = "dm";
-		if (message.channel.type !== "dm") guildID = message.guild.id;
+		let guildID = "DM";
+		if (message.channel.type !== "DM") guildID = message.guild.id;
 
 
 		let validReminders = userReminders.filter(reminder => {

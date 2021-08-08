@@ -17,7 +17,8 @@ const createReminder = db.prepare(`
 const removeReminder = db.prepare("DELETE FROM reminders WHERE id = (?)");
 const removeUserReminder = db.prepare("DELETE FROM reminders WHERE id = (?) AND user_id = (?)");
 
-const messageFunction = (channel, user, content) => channel.send(`💖 **${user.toString()}, here's your reminder:**`, {
+const messageFunction = (channel, user, content) => channel.send({
+	content: `💖 **${user.toString()}, here's your reminder:**`,
 	embeds: [embed(`⏰ ${content}`)]
 });
     
