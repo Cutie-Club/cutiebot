@@ -8,4 +8,4 @@ WORKDIR /usr/cutiebot
 RUN npm i
 RUN npm run test
 
-CMD [ "npm", "run", "dev:start" ]
+CMD [ "npm", "run", "start" ]

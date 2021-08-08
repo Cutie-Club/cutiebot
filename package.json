@@ -14,7 +14,7 @@
     "test": "npx jest",
     "dev:start": "nodemon index.js",
     "prod:start": "pm2 start index.js --name \"Cutiebot\"",
-    "start": "node index.js"
+    "start": "NODE_ENV=production node index.js"
   },
   "dependencies": {
     "better-sqlite3": "^7.4.3",
