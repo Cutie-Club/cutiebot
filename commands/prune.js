@@ -33,10 +33,7 @@ module.exports = {
 				message.channel.send({
 					embeds: [embed(`💖 **Deleted ${messages.size - 1} message(s).** 🔥`)]
 				}).then(msg => {
-					msg.delete({
-						timeout: 5000,
-						reason: "Prune command invoked."
-					});
+					setTimeout(() => msg.delete(), 5000);
 				});
 			})
 			.catch(err => {

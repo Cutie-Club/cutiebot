@@ -1,11 +1,10 @@
 {
   "name": "cutiebot",
-  "version": "3.0.1",
   "description": "Cutie Club Discord Server Bot",
   "repository": "https://github.com/amberstarlight/cutiebot.git",
   "author": {
     "name": "Amber Holly",
-    "email": "amber@amber.vision"
+    "email": "hello@amber.vision"
   },
   "license": "MIT",
   "private": true,
@@ -14,12 +13,13 @@
     "lint": "npx eslint .",
     "test": "npx jest",
     "dev:start": "nodemon index.js",
-    "prod:start": "pm2 start index.js --name \"Cutiebot\""
+    "prod:start": "pm2 start index.js --name \"Cutiebot\"",
+    "start": "NODE_ENV=production node index.js"
   },
   "dependencies": {
     "better-sqlite3": "^7.4.3",
     "chalk": "^3.0.0",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "^13.0.1",
     "ms": "^2.1.2",
     "node-gyp": "^6.1.0"
   },

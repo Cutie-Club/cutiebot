@@ -30,7 +30,7 @@ If you would like to open a PR, please check [the contributing guide](https://gi
 ## Development Requirements
 
 - `git` [version control](https://git-scm.com/).
-- `node` [version 12.0.0 or higher](https://nodejs.org).
+- `node` [version 16.6.0 or higher](https://nodejs.org).
 
 You will also need a token, if you want to stage the bot on your own server for testing. Create an application in the [Discord Developer Portal](https://discordapp.com/developers) and create a Bot User.
 

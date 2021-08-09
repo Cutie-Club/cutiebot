@@ -1,8 +1,8 @@
 const Database = require("better-sqlite3");
-
 const fs = require("fs");
 
-const { dbFolder, dbFile } = require("../config.json");
+const dbFolder = process.env.DB_FOLDER || "./database";
+const dbFile = process.env.DB_FILE || "cutiebot.db";
 const dbFullPath = `${dbFolder}/${dbFile}`;
 if (!fs.existsSync(dbFolder)) {
 	fs.mkdirSync(dbFolder);

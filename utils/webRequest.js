@@ -12,7 +12,6 @@ const getRequest = url => {
 		
 			// The whole response has been received
 			res.on('end', () => {
-				console.log(data);
 				resolve(JSON.parse(data));
 			});
 		

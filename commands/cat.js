@@ -24,7 +24,6 @@ module.exports = {
 				message.channel.send({
 					embeds: [catEmbed]
 				});
-				console.log(args);
 			})
 			.catch((err) => {
 				message.channel.send(JSON.stringify(err.message));
