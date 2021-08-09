@@ -4,7 +4,7 @@
   "repository": "https://github.com/amberstarlight/cutiebot.git",
   "author": {
     "name": "Amber Holly",
-    "email": "amber@amber.vision"
+    "email": "hello@amber.vision"
   },
   "license": "MIT",
   "private": true,
@@ -19,7 +19,7 @@
   "dependencies": {
     "better-sqlite3": "^7.4.3",
     "chalk": "^3.0.0",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "^13.0.1",
     "ms": "^2.1.2",
     "node-gyp": "^6.1.0"
   },
