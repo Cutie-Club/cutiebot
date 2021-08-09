@@ -72,18 +72,12 @@ module.exports = (client, message) => {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 		if (now < expirationTime) {
 			const timeLeft = (expirationTime - now) / 1000;
-			return message.delete({
-				timeout: 0,
-				reason: "Command called during cooldown. Deleted to prevent spam."
-			}).then(() => {
+			return message.delete().then(() => {
 				message.channel.send({
 					embeds: [embed(`❣ **Please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) !== 1 ? "s" : ""} before reusing the \`${command.name}\` command.**`)]
 				})
 					.then(msg => {
-						msg.delete({
-							timeout: 3000,
-							reason: "Cooldown warning deleted."
-						});
+						setTimeout(() => msg.delete(), 5000);
 					});
 			});
 		}

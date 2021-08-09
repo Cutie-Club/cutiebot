@@ -36,8 +36,8 @@ module.exports = {
 		let reminderID = id;
 		if (reminderID === undefined) {
 			// if no id is supplied add to database in turn generating one
-			let guildID = "dm";
-			if (channel.type !== "dm") guildID = guild.id;
+			let guildID = "DM";
+			if (channel.type !== "DM") guildID = guild.id;
 			const startTime = Date.now();
 			const endTime = startTime + duration;
 			reminderID = createReminder.run(user.id, channel.id, guildID, content, startTime, endTime).lastInsertRowid;
