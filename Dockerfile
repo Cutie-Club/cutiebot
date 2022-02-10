@@ -1,6 +1,8 @@
 FROM node:16.6.1-alpine3.14
 COPY . /usr/cutiebot
 
+RUN apk update
+RUN apk upgrade --available
 RUN apk add build-base python3
 RUN npm i -g node-gyp
 

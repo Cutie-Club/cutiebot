@@ -43,3 +43,22 @@ git clone https://github.com/Cutie-Club/cutiebot.git
 ```
 
 Once finished, run `cd cutiebot`, followed by `npm install`. You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
+
+## Docker Setup
+
+To run the bot via Docker, install Docker on your machine.
+
+Run the following to build the image:
+
+```
+docker build -t cutiebot .
+```
+
+You can run the image with the following command:
+
+```
+docker run -d \
+  --name cutiebot \
+  --mount type=bind,source="$(pwd)/database",target=/usr/cutiebot/database \
+  cutiebot
+```
