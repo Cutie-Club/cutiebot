@@ -4,26 +4,26 @@ The Cutie Club Discord Server bot, written using [Discord.js](https://discord.js
 
 ## Inviting to a Server
 
-To add the bot to a server, click the following link; https://discordapp.com/api/oauth2/authorize?client_id=633716546568585216&permissions=268561478&scope=bot
+To add the bot to a server, click the following link; <https://discordapp.com/api/oauth2/authorize?client_id=633716546568585216&permissions=268561478&scope=bot>
 
 Cutiebot requires the following permissions;
 
 ```diff
-+ Manage Roles  
-+ Kick Members  
-+ Ban Members  
-+ View Channels  
-+ Send Messages  
-+ Manage Messages  
-+ Embed Links  
-+ Attach Files  
-+ Read Message History  
++ Manage Roles
++ Kick Members
++ Ban Members
++ View Channels
++ Send Messages
++ Manage Messages
++ Embed Links
++ Attach Files
++ Read Message History
 + Add Reactions
 ```
 
 (Please note that you *will* need the `Administrator` permission on the server you wish to add Cutiebot to!)
 
-# Contributing
+## Contributing
 
 If you would like to open a PR, please check [the contributing guide](https://github.com/Cutie-Club/cutiebot/blob/master/CONTRIBUTING.md).
 
@@ -38,7 +38,7 @@ You will also need a token, if you want to stage the bot on your own server for 
 
 In your terminal, run the following command;
 
-```
+```sh
 git clone https://github.com/Cutie-Club/cutiebot.git
 ```
 
@@ -50,15 +50,16 @@ To run the bot via Docker, install Docker on your machine.
 
 Run the following to build the image:
 
-```
+```sh
 docker build -t cutiebot .
 ```
 
 You can run the image with the following command:
 
-```
+```sh
 docker run -d \
+  --env DISCORD_TOKEN=yourTokenHere \
   --name cutiebot \
   --mount type=bind,source="$(pwd)/database",target=/usr/cutiebot/database \
-  cutiebot
+  cutiebot:latest
 ```
