@@ -1,14 +1,15 @@
-const loggerInit = require("./utils/logger.js");
-loggerInit();
-log.time("startup");
-log.info("Starting Cutiebot!");
+require('dotenv').config();
 
-const Discord = require("discord.js");
-const { Client, Intents } = require('discord.js');
+const loggerInit = require('./utils/logger.js');
+loggerInit();
+log.time('startup');
+log.info('Starting Cutiebot!');
+
+const { Client, Collection, Intents } = require('discord.js');
 const token = process.env.DISCORD_TOKEN;
 
 if (!token) {
-	log.error("Token not provided. Set the DISCORD_TOKEN environment variable and restart.");
+	log.error('Token not provided. Set the DISCORD_TOKEN environment variable and restart.');
 	process.exit(1);
 }
 
@@ -23,43 +24,60 @@ const client = new Client({
 	]
 });
 
-const fs = require("fs");
-const chalk = require("chalk");
+const fs = require('fs');
+const chalk = require('chalk');
 
-client.commands = new Discord.Collection();
+client.commands = new Collection();
 const commandFiles = fs
-	.readdirSync("./commands")
-	.filter(file => file.endsWith(".js"));
+	.readdirSync('./commands')
+	.filter(file => file.endsWith('.js'));
 log.info(`Loading a total of ${chalk.bold(commandFiles.length)} commands.`);
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
-	log.debug(`Loaded ${chalk.bold(command.name)} command.`);
+	client.commands.set(command.data.name, command);
+	log.debug(`Loaded ${chalk.bold(command.data.name)} command.`);
 }
 
 const eventFiles = fs
-	.readdirSync("./events/")
-	.filter(file => file.endsWith(".js"));
+	.readdirSync('./events/')
+	.filter(file => file.endsWith('.js'));
 log.info(`Loading a total of ${chalk.bold(eventFiles.length)} events.`);
 
 for (const file of eventFiles) {
 	const event = require(`./events/${file}`);
-	const eventName = file.split(".")[0];
-	client.on(eventName, event.bind(null, client));
-	log.debug(`Loaded ${chalk.bold(eventName)} event.`);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+	log.debug(`Loaded ${chalk.bold(event.name)} event.`);
 }
 
-process.on("unhandledRejection", error => {
-	log.error(`Uncaught Promise Rejection`);
+process.on('unhandledRejection', error => {
+	log.error('Uncaught Promise Rejection');
 	console.error(error);
 });
 
 client
-	.on("disconnect", () => log.warn("Bot is disconnecting..."))
-	.on("reconnecting", () => log.info("Bot reconnecting..."))
-	.on("debug", debug => log.debug(debug))
-	.on("error", e => log.error(e))
-	.on("warn", info => log.warn(info));
+	.on('disconnect', () => log.warn('Bot is disconnecting...'))
+	.on('reconnecting', () => log.info('Bot reconnecting...'))
+	.on('debug', debug => log.debug(debug))
+	.on('error', e => log.error(e))
+	.on('warn', info => log.warn(info))
+	.on('interactionCreate', async interaction => {
+		if (!interaction.isCommand()) return;
+	
+		const command = client.commands.get(interaction.commandName);
+	
+		if (!command) return;
+	
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(error);
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	});
 
 client.login(token);
