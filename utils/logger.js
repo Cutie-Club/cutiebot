@@ -7,7 +7,7 @@ const obs = new PerformanceObserver(list => { // listen for measurements
 	const start = marks[1];
 	const end = marks[2];
 	console.log(
-		`${timestamp.time()} ${chalk.bgBlue(" TIMR ")} time between '${chalk.bold(start)}' and '${chalk.bold(end)}': ${chalk.blue.bold(Math.round(measurement.duration)+"ms")}`
+		`${timestamp.time()} ${chalk.bgBlue(' TIMR ')} time between '${chalk.bold(start)}' and '${chalk.bold(end)}': ${chalk.blue.bold(Math.round(measurement.duration)+'ms')}`
 	);
 });
 
@@ -25,33 +25,33 @@ const timestamp = {
 	},
 	date: () => {
 		let options = {
-			weekday: "short",
-			month: "short",
-			day: "numeric"
+			weekday: 'short',
+			month: 'short',
+			day: 'numeric'
 		};
-		return `${new Date().toLocaleString("en-GB", options)}`;
+		return `${new Date().toLocaleString('en-GB', options)}`;
 	}
 };
 
 const presets = {
 	debug: (message) => console.debug(
-		`${timestamp.time()} ${chalk.bgCyan(" DBUG ")} ${message}`
+		`${timestamp.time()} ${chalk.bgCyan(' DBUG ')} ${message}`
 	),
 	error: (message) => console.error(
-		`${timestamp.time()} ${chalk.bgRed(" ERR! ")} ${message}`
+		`${timestamp.time()} ${chalk.bgRed(' ERR! ')} ${message}`
 	),
 	info: (message) => console.info(
-		`${timestamp.time()} ${chalk.bgGreen(" INFO ")} ${message}`
+		`${timestamp.time()} ${chalk.bgGreen(' INFO ')} ${message}`
 	),
 	warn: (message) => console.warn(
-		`${timestamp.time()} ${chalk.bgYellow(" WARN ")} ${message}`
+		`${timestamp.time()} ${chalk.bgYellow(' WARN ')} ${message}`
 	),
 	table: (tableArray) => {
 		console.log(
-			`${timestamp.time()} ${chalk.bgMagenta(" TABL ")}`
+			`${timestamp.time()} ${chalk.bgMagenta(' TABL ')}`
 		);
 		console.table(tableArray);
-		console.log("");
+		console.log('');
 	},
 	time: (label) => performance.mark(label),
 	timeBetween: (start, end) => {
@@ -61,7 +61,7 @@ const presets = {
 };
 
 // disable debug logging if we're in prod
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
 	presets.debug = () => {};
 }
 

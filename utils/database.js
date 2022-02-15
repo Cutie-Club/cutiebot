@@ -1,8 +1,8 @@
-const Database = require("better-sqlite3");
-const fs = require("fs");
+const Database = require('better-sqlite3');
+const fs = require('fs');
 
-const dbFolder = process.env.DB_FOLDER || "./database";
-const dbFile = process.env.DB_FILE || "cutiebot.db";
+const dbFolder = process.env.DB_FOLDER || './database';
+const dbFile = process.env.DB_FILE || 'cutiebot.db';
 const dbFullPath = `${dbFolder}/${dbFile}`;
 if (!fs.existsSync(dbFolder)) {
 	fs.mkdirSync(dbFolder);
@@ -13,10 +13,10 @@ let db;
 try {
 	db = new Database(dbFullPath, { fileMustExist: true });
 } catch (error) {
-	log.warn("Database file does not exist!");
-	log.info("Attempting to create database file...");
+	log.warn('Database file does not exist!');
+	log.info('Attempting to create database file...');
 	db = new Database(dbFullPath);
-	db.pragma("journal_mode = WAL"); //set journaling mode
+	db.pragma('journal_mode = WAL'); //set journaling mode
 }
 
 db.prepare(

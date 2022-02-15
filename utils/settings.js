@@ -1,11 +1,11 @@
-const db = require("./database.js");
+const db = require('./database.js');
 const settings = {};
 
 const keyWords = {
-	add: ["add", "push"],
-	remove: ["remove", "delete"],
-	true: ["1","on","true"],
-	false: ["0","off","false"]
+	add: ['add', 'push'],
+	remove: ['remove', 'delete'],
+	true: ['1','on','true'],
+	false: ['0','off','false']
 };
 
 
@@ -51,7 +51,7 @@ const modifyArray = (flag, array, item, collection) => {
 const roleListHandler = (id, input, key, collection) => {
 	const roles = (settings[id][key] || []).slice();
 	if (input.length === 1) {
-		modifyArray("add", roles, input[0], collection);
+		modifyArray('add', roles, input[0], collection);
 		return roles;
 	}
 	modifyArray(input[0], roles, input.slice(1), collection);
@@ -61,16 +61,16 @@ const roleListHandler = (id, input, key, collection) => {
 
 // settings validators
 const validSettings = {
-	"prefix": (guild, [input]) => {
-		if (typeof(input) !== "string") throw `TypeError; prefix should be a \`string\`.`;
-		if (input.length !== 1) throw `Prefix too long; should be of length \`1\``;
+	'prefix': (guild, [input]) => {
+		if (typeof(input) !== 'string') throw 'TypeError; prefix should be a `string`.';
+		if (input.length !== 1) throw 'Prefix too long; should be of length `1`';
 		return input;
 	},
-	"role_blacklist": (guild, input) => roleListHandler(guild.id, input, "role_blacklist", guild.roles.cache),
-	"mod_role": (guild, input) => roleListHandler(guild.id, input, "mod_role", guild.roles.cache),
-	"role_cmds": (guild, [input]) => boolParser(input),
-	"welcome_msgs": (guild, [input]) => boolParser(input),
-	"welcome_channel_id": (guild, [input]) => {
+	'role_blacklist': (guild, input) => roleListHandler(guild.id, input, 'role_blacklist', guild.roles.cache),
+	'mod_role': (guild, input) => roleListHandler(guild.id, input, 'mod_role', guild.roles.cache),
+	'role_cmds': (guild, [input]) => boolParser(input),
+	'welcome_msgs': (guild, [input]) => boolParser(input),
+	'welcome_channel_id': (guild, [input]) => {
 		idChecker(guild.channels.cache, input);
 		return input;
 	},
@@ -78,7 +78,7 @@ const validSettings = {
 
 // settings helpers
 const generateParameterString = len => {
-	const questionMarkArray = new Array(len).fill("?");
+	const questionMarkArray = new Array(len).fill('?');
 	return `(${questionMarkArray})`;
 };
 
@@ -98,7 +98,7 @@ const initFunction = currentGuilds => {
 			if (!expectedGuildIDs.includes(currentGuild.id)) {
 				log.warn(`${currentGuild.name} missing from database, adding...`);
 				// add guild to database here
-				newGuilds = db.prepare("INSERT INTO settings (guild_id) VALUES (?);").run(currentGuild.id);
+				newGuilds = db.prepare('INSERT INTO settings (guild_id) VALUES (?);').run(currentGuild.id);
 			}
 		}
 
@@ -107,13 +107,13 @@ const initFunction = currentGuilds => {
 			if (!currentGuildIDs.includes(expectedGuild.guild_id)) {
 				log.warn(`Extraneous guild in database with ID: ${expectedGuild.guild_id} will be removed`);
 				// remove guild from database here
-				db.prepare("DELETE FROM settings WHERE guild_id = ?;").run(expectedGuild.guild_id);
+				db.prepare('DELETE FROM settings WHERE guild_id = ?;').run(expectedGuild.guild_id);
 			}
 		}
 	}
 
 	const guildOptions = db.prepare(
-		`SELECT ${Object.keys(validSettings).join(",")} FROM settings WHERE guild_id IN ${generateParameterString(currentGuildIDs.length)}`
+		`SELECT ${Object.keys(validSettings).join(',')} FROM settings WHERE guild_id IN ${generateParameterString(currentGuildIDs.length)}`
 	).all(...currentGuildIDs);
 
 	currentGuilds.forEach((guild,i) => {
@@ -121,7 +121,7 @@ const initFunction = currentGuilds => {
 		Object.entries(guildOptions[i]).forEach(([key, value]) => {
 			guildOptionsParsed[key] = value;
 
-			if (key === "mod_role" || key === "role_blacklist") guildOptionsParsed[key] = JSON.parse(value);
+			if (key === 'mod_role' || key === 'role_blacklist') guildOptionsParsed[key] = JSON.parse(value);
 		});
 
 		settings[guild.id] = guildOptionsParsed;

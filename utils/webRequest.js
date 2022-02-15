@@ -15,7 +15,7 @@ const getRequest = url => {
 				resolve(JSON.parse(data));
 			});
 		
-		}).on("error", (err) => {
+		}).on('error', (err) => {
 			reject(err.message);
 		});
 	});
