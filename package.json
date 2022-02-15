@@ -1,7 +1,7 @@
 {
   "name": "cutiebot",
   "description": "Cutie Club Discord Server Bot",
-  "repository": "https://github.com/amberstarlight/cutiebot.git",
+  "repository": "https://github.com/Cutie-Club/cutiebot.git",
   "author": {
     "name": "Amber Holly",
     "email": "hello@amber.vision"
@@ -13,26 +13,22 @@
     "lint": "npx eslint .",
     "test": "npx jest",
     "dev:start": "nodemon index.js",
-    "prod:start": "pm2 start index.js --name \"Cutiebot\"",
     "start": "NODE_ENV=production node index.js"
   },
   "dependencies": {
-    "better-sqlite3": "^7.4.3",
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "better-sqlite3": "^7.5.0",
     "chalk": "^3.0.0",
-    "discord.js": "^13.0.1",
+    "discord-api-types": "^0.27.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
     "ms": "^2.1.2"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "jest": "^25.5.4",
-    "nodemon": "^2.0.6",
-    "pre-commit": "^1.2.2"
-  },
-  "pre-commit": {
-    "silent": false,
-    "run": [
-      "lint"
-    ]
+    "nodemon": "^2.0.6"
   },
   "jest": {
     "testEnvironment": "node"

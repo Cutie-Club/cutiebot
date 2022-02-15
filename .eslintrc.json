@@ -18,6 +18,8 @@
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-var": "error",
     "object-curly-spacing": ["error", "always"],
-    "semi": ["warn", "always"]
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "eol-last": ["error", "always"]
   }
 }
