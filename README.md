@@ -30,7 +30,7 @@ If you would like to open a PR, please check [the contributing guide](https://gi
 ## Development Requirements
 
 - `git` [version control](https://git-scm.com/).
-- `node` [version 16.6.0 or higher](https://nodejs.org).
+- `node` [version 16.14.0 or higher](https://nodejs.org).
 
 You will also need a token, if you want to stage the bot on your own server for testing. Create an application in the [Discord Developer Portal](https://discordapp.com/developers) and create a Bot User.
 
@@ -42,7 +42,9 @@ In your terminal, run the following command;
 git clone https://github.com/Cutie-Club/cutiebot.git
 ```
 
-Once finished, run `cd cutiebot`, followed by `npm install`. You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
+Once finished, run `cd cutiebot`, followed by `yarn install`. You may need to switch your local node install to 16.14 using `nvm` to avoid issues installing `better-sqlite3`, as prebuilt binaries are provided for node's LTS versions.
+
+You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
 
 ## Docker Setup
 
@@ -63,3 +65,5 @@ docker run -d \
   --mount type=bind,source="$(pwd)/database",target=/usr/cutiebot/database \
   cutiebot:latest
 ```
+
+Alternatively, you can supply a `.env` file in the project's root directory with DISCORD_TOKEN set.

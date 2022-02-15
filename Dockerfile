@@ -1,13 +1,11 @@
-FROM node:16.6.1-alpine3.14
+FROM node:16.14-alpine
 COPY . /usr/cutiebot
 
 RUN apk update
 RUN apk upgrade --available
-RUN apk add build-base python3
-RUN npm i -g node-gyp
+RUN apk add yarn
 
 WORKDIR /usr/cutiebot
-RUN npm i
-RUN npm run test
+RUN yarn
 
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "run", "start" ]
