@@ -3,7 +3,9 @@ const embed = require('../utils/embed.js');
 
 module.exports = {
 	name: 'guildMemberAdd',
-	execute(client, member) {
+	execute(member) {
+		log.debug(`${member.user.username} joined ${member.guild.name}.`);
+
 		let guildSettings = settings.getSettings(member.guild.id);
 
 		if (!guildSettings.welcome_msgs) return;
