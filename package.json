@@ -11,7 +11,6 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
-    "test": "npx jest",
     "dev:start": "nodemon index.js",
     "start": "NODE_ENV=production node index.js"
   },
@@ -27,7 +26,6 @@
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "jest": "^25.5.4",
     "nodemon": "^2.0.6"
   },
   "jest": {
