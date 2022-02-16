@@ -1,49 +1,73 @@
-const embed = require("../utils/embed.js");
+const { Permissions } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const embed = require('../utils/embed.js');
 
 module.exports = {
-	name: "ban",
-	description: "Bans a very naughty user.",
-	usage: "[@user]",
-	cooldown: 0,
-	guildOnly: true,
-	modOnly: true,
-	execute(message) {
-		const user = message.mentions.members.first();
+	data: new SlashCommandBuilder()
+		.setName('ban')
+		.setDescription('Ban a user.')
+		.addUserOption(option =>
+			option.setName('target')
+				.setDescription('The user to ban.')
+				.setRequired(true)
+		)
+		.addStringOption(option =>
+			option.setName('reason')
+				.setDescription('The reason for banning this user.')
+		)
+		.addIntegerOption(option =>
+			option.setName('days')
+				.setDescription('Days of user\'s messages to delete (0-7).')
+		),
+	async execute(interaction) {
+		const member = interaction.options.getMember('target');
+		const user = interaction.options.getUser('target');
+		const reason = interaction.options.getString('reason');
+		const days = interaction.options.getInteger('days');
 
-		if (!message.mentions.users.size) {
-			return message.channel.send({
-				embeds: [embed("❣ **You need to mention a user in order to ban them!**")]
+		await interaction.reply({
+			embeds: [embed(`💞 **Attempting to ban ${user}...**`)],
+			ephemeral: true
+		});
+
+		if (!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS, true)) {
+			return await interaction.editReply({
+				embeds: [embed('❣️ **You don\'t have permission to ban users.**')]
 			});
 		}
 
-		if (user) {
-			const member = message.guild.member(user);
-			if (!member) {
-				return message.channel.send({
-					embeds: [embed("❣ **I can't find that user. Are they in this server?**")]
-				});
-			}
-
-			if (!member.manageable) {
-				return message.channel.send({
-					embeds: [embed("❣ **I don't have the correct permissions to do that.**")]
-				});
-			}
-
-			member.ban({
-				reason: `Banned by ${message.author.username} via command.`
-			})
-				.then(() => {
-					message.channel.send({
-						embeds: [embed(`💖 **${user.tag} was banned.** 🔨`)]
-					});
-				})
-				.catch(err => {
-					log.error(err);
-					message.channel.send({
-						embeds: [embed("💔 **There was an error trying to ban that user!**")]
-					});
-				});
+		if (!interaction.channel.permissionsFor(interaction.guild.me).has('BAN_MEMBERS', false)) {
+			return await interaction.editReply({
+				embeds: [embed('❣️ **I don\'t have permission to ban users.**')]
+			});
 		}
-	}
+
+		if (days != null && days > 7) {
+			return await interaction.editReply({
+				embeds: [embed('❣️ **I can only delete up to a week\'s worth of messages.**')]
+			});
+		}
+
+		let withReason = `, with reason "${reason}".`;
+
+		try {
+			member.ban({
+				days: (days || 0),
+				reason: reason
+			});
+			log.info(`${interaction.user.username} banned ${user.tag}, in #${interaction.channel.name}, on ${interaction.guild.name}${reason === null ? '.' : withReason}`);
+			interaction.editReply({
+				embeds: [
+					embed(`💖 **Banned ${user}.** 🔨`)
+						.addField('Reason', (reason || 'No reason provided.'))
+						.addField('Days of messages deleted', (days || 'None.'))
+				]
+			});
+		} catch (err) {
+			log.error(err);
+			interaction.editReply({
+				embeds: [embed('💔 **There was an error trying to ban that user.**')]
+			});
+		}
+	},
 };
