@@ -21,7 +21,7 @@ module.exports = {
 		const reason = interaction.options.getString('reason');
 
 		await interaction.reply({
-			embeds: [embed(`💞 Attempting to kick ${user}...`)],
+			embeds: [embed(`💞 **Attempting to kick ${user}...**`)],
 			ephemeral: true
 		});
 

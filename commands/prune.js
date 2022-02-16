@@ -15,7 +15,7 @@ module.exports = {
 		const amount = interaction.options.getInteger('amount');
 
 		await interaction.reply({
-			embeds: [embed(`💞 Attempting to delete ${amount} messages...`)],
+			embeds: [embed(`💞 **Attempting to delete ${amount} messages...**`)],
 			ephemeral: true
 		});
 
