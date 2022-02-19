@@ -61,11 +61,6 @@ const roleListHandler = (id, input, key, collection) => {
 
 // settings validators
 const validSettings = {
-	'prefix': (guild, [input]) => {
-		if (typeof(input) !== 'string') throw 'TypeError; prefix should be a `string`.';
-		if (input.length !== 1) throw 'Prefix too long; should be of length `1`';
-		return input;
-	},
 	'role_blacklist': (guild, input) => roleListHandler(guild.id, input, 'role_blacklist', guild.roles.cache),
 	'mod_role': (guild, input) => roleListHandler(guild.id, input, 'mod_role', guild.roles.cache),
 	'role_cmds': (guild, [input]) => boolParser(input),
