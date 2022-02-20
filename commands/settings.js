@@ -1,91 +1,131 @@
-const settings = require("../utils/settings.js");
-const embed = require("../utils/embed.js");
+const { Permissions } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const settings = require('../utils/settings.js');
+const embed = require('../utils/embed.js');
 
-const idResolver = (collection, id) =>  {
+const idResolver = (collection, id) => {
 	const item = collection.get(id);
-	if (item) return (item.name);
-	return "ERROR";
+	if (item) return item.name;
+	return 'ERROR';
 };
 
-const rolesFormatter = (roles, message) => roles.map(id => {
-	const roleName = idResolver(message.guild.roles.cache, id);
-	return `${roleName} (${id})`;
-}).join('\n');
+const rolesFormatter = (roles, message) =>
+	roles
+		.map((id) => {
+			const roleName = idResolver(message.guild.roles.cache, id);
+			return roleName;
+		})
+		.join('\n');
 
 const transformations = {
-	"role_cmds": value => Boolean(value),
-	"welcome_msgs": value => Boolean(value),
-	"role_blacklist": rolesFormatter,
-	"mod_role": rolesFormatter,
-	"welcome_channel_id": (id, message) => `#${idResolver(message.guild.channels.cache, id)} (${id})`
+	role_cmds: (value) => Boolean(value),
+	welcome_msgs: (value) => Boolean(value),
+	role_blacklist: rolesFormatter,
+	mod_role: rolesFormatter,
+	welcome_channel_id: (id, message) =>
+		`#${idResolver(message.guild.channels.cache, id)}`,
 };
 
 const settingsPrettifier = {
-	"prefix": "Prefix",
-	"role_blacklist": "Role Blacklist",
-	"mod_role": "Mod Roles",
-	"role_cmds": "Enable Role Commands",
-	"welcome_msgs": "Enable Welcome Messages",
-	"welcome_channel_id": "Welcome Message Channel"
+	role_blacklist: 'Role Blacklist',
+	mod_role: 'Mod Roles',
+	role_cmds: 'Role Commands',
+	welcome_msgs: 'Welcome Messages',
+	welcome_channel_id: 'Welcome Message Channel',
 };
 
+const optionChoices = [
+	['Role Blacklist', 'role_blacklist'],
+	['Mod Roles', 'mod_roles'],
+	['Role Commands', 'role_cmds'],
+	['Welcome Messages', 'welcome_msgs'],
+	['Welcome Channel', 'welcome_channel_id']
+];
+
 const transformer = (setting, value, message) => {
-	if (value === null || value === undefined) return "not set";
-	if (Object.keys(transformations).includes(setting)) return transformations[setting](value, message);
+	if (value === null || value === undefined) return 'not set';
+	if (Object.keys(transformations).includes(setting))
+		return transformations[setting](value, message);
 	return value;
 };
 
 module.exports = {
-	name: "settings",
-	description: "Change the bot settings for your server.",
-	aliases: ["setting", "config"],
-	usage: '<setting> <option>',
-	cooldown: 10,
-	guildOnly: true,
-	modOnly: true,
-	execute(message, args) {
-		let settingsEmbed = embed("❣ Roles and channels are stored by their ID; you must use IDs when modifying these settings.")
-			.setTitle(`⚙️ Settings for ${message.guild.name}`)
-			.setThumbnail(message.guild.iconURL());
+	data: new SlashCommandBuilder()
+		.setName('settings')
+		.setDescription('Change Cutiebot settings for your server.')
+		.addSubcommand(subcommand =>
+			subcommand.setName('view')
+				.setDescription('View settings for your server.')
+		)
+		.addSubcommand(subcommand =>
+			subcommand.setName('update')
+				.setDescription('Update settings for your server.')
+				.addStringOption(option =>
+					option.setName('setting')
+						.setDescription('The setting to update.')
+						.setRequired(true)
+						.addChoices(optionChoices)
+				)
+				.addStringOption(option =>
+					option.setName('value')
+						.setDescription('The value to set.')
+						.setRequired(true)
+				)
+		),
+	async execute(interaction) {
+		await interaction.deferReply({
+			ephemeral: true
+		});
 
-		let guildSettings = settings.getSettings(message.guild.id);
-		
-		if (args.length === 0) {
-			let settingArray = Object.entries(guildSettings);
-			settingArray.forEach(([settingName, settingValue]) => {
-				settingsEmbed.addField(`**${settingsPrettifier[settingName]}** (${settingName})`, `\`\`\`js\n${transformer(settingName, settingValue, message)}\`\`\``);
-			});
-			return message.channel.send({ embeds: [settingsEmbed] });
+		// if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR, true)) {
+		// 	return interaction.editReply({
+		// 		embeds: [embed('❣️ **You don\'t have permission to manage settings.**')]
+		// 	});
+		// }
+
+		let guildSettings = settings.getSettings(interaction.guild.id);
+		const settingsArray = Object.entries(guildSettings);
+
+		let settingsEmbed = embed('')
+			.setTitle(`⚙️ Settings for ${interaction.guild.name}`)
+			.setThumbnail(interaction.guild.iconURL());
+
+		settingsArray.forEach(([settingName, settingValue]) => {
+			settingsEmbed.addField(
+				`**${settingsPrettifier[settingName]}**`,
+				`\`\`\`js\n${transformer(settingName, settingValue, interaction)}\`\`\``
+			);
+		});
+
+		if (interaction.options.getSubcommand() === 'view') {
+			return interaction.editReply({ embeds: [settingsEmbed] });
 		}
 
-		if (args.length >= 1) { // setting supplied
-			const setting = args[0];
-			if (!Object.keys(guildSettings).includes(setting)) {
-				return message.channel.send({
-					embeds: [embed("❣ That setting is not configurable, or doesn't exist.")]
-				});
-			}
+		// getSubcommand === 'update'
+		const chosenSetting = interaction.options.getString('setting');
+		let chosenValue = interaction.options.getString('value');
 
-			if (args.length >= 2) { // value supplied
-				const value = args.slice(1);
-				const result = settings.updateSetting(message.guild, setting, value);
-				if (result !== 0) {
-					const errorEmbed = embed("❣ **There was an error updating that setting.**");
-					errorEmbed.addField("Error:", result);
-					return message.channel.send({
-						embeds: [errorEmbed]
-					});
-				}
+		const idExtractionRequired = ['role_blacklist', 'mod_role', 'welcome_channel_id'];
+		const idRegex = /^<(?:@&|#)(\d+)>$/;
 
-				guildSettings = settings.getSettings(message.guild.id);
-				return message.channel.send({
-					embeds: [embed(`💖 **Settings updated:** set ${settingsPrettifier[setting]} to \`${transformer(setting, guildSettings[setting], message)}\``)]
-				});
-			}
+		if (idExtractionRequired.includes(chosenSetting)) {
+			chosenValue = chosenValue.match(idRegex)[1];
+		}
 
-			return message.channel.send({
-				embeds: [embed(`💖 **Currently, ${(settingsPrettifier[setting]).toLowerCase()} is \`${transformer(setting, guildSettings[setting], message)}\`**`)]
+		const result = settings.updateSetting(interaction.guild, chosenSetting, [chosenValue]);
+		if (result !== 0) {
+			const errorEmbed = embed('❣️ **There was an error updating that setting.**');
+			errorEmbed.addField('Error:', result);
+			return interaction.editReply({
+				embeds: [errorEmbed]
 			});
 		}
-	}	
+
+		guildSettings = settings.getSettings(interaction.guild.id);
+
+		return interaction.editReply({
+			embeds: [embed(`💖 **Settings updated:** set ${settingsPrettifier[chosenSetting]} to \`${transformer(chosenSetting, guildSettings[chosenSetting], interaction)}\``)]
+		});
+	}
+
 };

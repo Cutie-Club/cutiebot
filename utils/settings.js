@@ -2,12 +2,9 @@ const db = require('./database.js');
 const settings = {};
 
 const keyWords = {
-	add: ['add', 'push'],
-	remove: ['remove', 'delete'],
 	true: ['1','on','true'],
 	false: ['0','off','false']
 };
-
 
 const boolParser = input => {
 	if (keyWords.true.includes(input)) return 1;
@@ -15,46 +12,30 @@ const boolParser = input => {
 	throw `Invalid argument \`${input}\`, argument should be of type: \`bool\`.`;
 };
 
-const idChecker = (collection, id) => {
-	if (!collection.get(id)) throw `Could not find \`${id}\` on this server.`;
-};
+const collectionContainsId = (collection, id) => collection.has(id);
 
-const modifyArray = (flag, array, item, collection) => {
-	let itemArray = [item];
-	if (Array.isArray(item)) itemArray = item.slice();
-	let adding;
+const mutateArrayOfIds = (arrayToModify, itemArray, validIdCollection) => {
 	itemArray.forEach(item => {
-		const itemExists = array.includes(item);
-		if (!itemExists) idChecker(collection, item);
-		
-		if (keyWords.add.includes(flag)) {
-			adding = true;
-			if (itemExists) throw `\`${item}\` already listed.`;
-		} else if (keyWords.remove.includes(flag)){
-			if (!itemExists) throw `\`${item}\` not listed.`;
-			adding = false;
+		const itemExistsInArray = arrayToModify.includes(item);
+		if (!itemExistsInArray) {
+			if (collectionContainsId(validIdCollection, item)) {
+				// valid id supplied, add item into arrayToModify
+				arrayToModify.push(item);
+			} else {
+				// invalid id supplied, throw err
+				throw `Could not find \`${item}\` on this server.`;
+			}
 		} else {
-			throw `Unknown key word: \`${flag}\`.`; 
+			// item does exist, remove it
+			let index = arrayToModify.indexOf(item);
+			arrayToModify.splice(index, 1);
 		}
 	});
-
-	if (adding) {
-		array.push(...itemArray);
-	} else {
-		itemArray.forEach(item => {
-			let index = array.indexOf(item);
-			array.splice(index, 1);
-		});
-	}
 };
 
-const roleListHandler = (id, input, key, collection) => {
-	const roles = (settings[id][key] || []).slice();
-	if (input.length === 1) {
-		modifyArray('add', roles, input[0], collection);
-		return roles;
-	}
-	modifyArray(input[0], roles, input.slice(1), collection);
+const roleListHandler = (guildId, input, settingName, validIdCollection) => {
+	const roles = (settings[guildId][settingName] || '').slice();
+	mutateArrayOfIds(roles, input, validIdCollection);
 	if (roles.length === 0) return null;
 	return roles;
 };
@@ -66,7 +47,7 @@ const validSettings = {
 	'role_cmds': (guild, [input]) => boolParser(input),
 	'welcome_msgs': (guild, [input]) => boolParser(input),
 	'welcome_channel_id': (guild, [input]) => {
-		idChecker(guild.channels.cache, input);
+		collectionContainsId(guild.channels.cache, input);
 		return input;
 	},
 };
