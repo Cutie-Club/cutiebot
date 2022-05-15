@@ -49,9 +49,7 @@ const tableInfo = db.pragma('table_info(settings)');
 
 if (tableInfo.find(({ name }) => name === 'prefix')) {
 	log.warn('Legacy settings table found, dropping prefix column...');
-	db.prepare(
-		'ALTER TABLE settings DROP COLUMN prefix;'
-	).run();
+	db.prepare('ALTER TABLE settings DROP COLUMN prefix;').run();
 }
 
 module.exports = db;

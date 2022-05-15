@@ -6,34 +6,33 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('cat')
 		.setDescription('Cat as a service.')
-		.addStringOption(option => 
-			option.setName('tag')
+		.addStringOption((option) =>
+			option
+				.setName('tag')
 				.setDescription('Search term for specific cat images')
 		),
 	async execute(interaction) {
 		await interaction.deferReply();
 
-		let catEmbed = embed('😻 **Here\'s your cat!**');
+		let catEmbed = embed("😻 **Here's your cat!**");
 		const string = interaction.options.getString('tag');
 
 		let tags = '?json=true';
 		if (string != null) {
 			tags = `/${string}?json=true`;
 			catEmbed.setFooter({
-				text: `tag: ${string}`
+				text: `tag: ${string}`,
 			});
 		}
 
-		await getRequest(`https://cataas.com/cat${tags}`)
-			.then(data => {
-				catEmbed.setImage(`https://cataas.com${data.url}`);
-			})
-			.catch(err => {
-				log.error(err);
+		try {
+			const data = await getRequest(`https://cataas.com/cat${tags}`);
+			catEmbed.setImage(`https://cataas.com${data.url}`);
+			await interaction.editReply({
+				embeds: [catEmbed],
 			});
-
-		await interaction.editReply({
-			embeds: [catEmbed]
-		});
+		} catch (error) {
+			console.log(error);
+		}
 	},
 };

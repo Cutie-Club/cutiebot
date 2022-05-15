@@ -3,7 +3,7 @@ const embed = require('../utils/embed.js');
 const wait = require('util').promisify(setTimeout);
 
 const flip = () => {
-	return (Math.random() >= 0.5) ? 'Heads' : 'Tails';
+	return Math.random() >= 0.5 ? 'Heads' : 'Tails';
 };
 
 module.exports = {
@@ -12,11 +12,11 @@ module.exports = {
 		.setDescription('Flips a coin.'),
 	async execute(interaction) {
 		await interaction.reply({
-			embeds: [embed('💞 **Flipping a coin...**')]
+			embeds: [embed('💞 **Flipping a coin...**')],
 		});
 		await wait(2000);
 		await interaction.editReply({
-			embeds: [embed(`💖 **${flip()}!**`)]
+			embeds: [embed(`💖 **${flip()}!**`)],
 		});
 	},
 };

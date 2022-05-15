@@ -39,7 +39,7 @@ const optionChoices = [
 	['Mod Roles', 'mod_roles'],
 	['Role Commands', 'role_cmds'],
 	['Welcome Messages', 'welcome_msgs'],
-	['Welcome Channel', 'welcome_channel_id']
+	['Welcome Channel', 'welcome_channel_id'],
 ];
 
 const transformer = (setting, value, message) => {
@@ -53,35 +53,41 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('settings')
 		.setDescription('Change Cutiebot settings for your server.')
-		.addSubcommand(subcommand =>
-			subcommand.setName('view')
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('view')
 				.setDescription('View settings for your server.')
 		)
-		.addSubcommand(subcommand =>
-			subcommand.setName('update')
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('update')
 				.setDescription('Update settings for your server.')
-				.addStringOption(option =>
-					option.setName('setting')
+				.addStringOption((option) =>
+					option
+						.setName('setting')
 						.setDescription('The setting to update.')
 						.setRequired(true)
 						.addChoices(optionChoices)
 				)
-				.addStringOption(option =>
-					option.setName('value')
+				.addStringOption((option) =>
+					option
+						.setName('value')
 						.setDescription('The value to set.')
 						.setRequired(true)
 				)
 		),
 	async execute(interaction) {
 		await interaction.deferReply({
-			ephemeral: true
+			ephemeral: true,
 		});
 
-		// if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR, true)) {
-		// 	return interaction.editReply({
-		// 		embeds: [embed('❣️ **You don\'t have permission to manage settings.**')]
-		// 	});
-		// }
+		if (
+			!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR, true)
+		) {
+			return interaction.editReply({
+				embeds: [embed("❣️ **You don't have permission to manage settings.**")],
+			});
+		}
 
 		let guildSettings = settings.getSettings(interaction.guild.id);
 		const settingsArray = Object.entries(guildSettings);
@@ -105,27 +111,44 @@ module.exports = {
 		const chosenSetting = interaction.options.getString('setting');
 		let chosenValue = interaction.options.getString('value');
 
-		const idExtractionRequired = ['role_blacklist', 'mod_role', 'welcome_channel_id'];
+		const idExtractionRequired = [
+			'role_blacklist',
+			'mod_role',
+			'welcome_channel_id',
+		];
 		const idRegex = /^<(?:@&|#)(\d+)>$/;
 
 		if (idExtractionRequired.includes(chosenSetting)) {
 			chosenValue = chosenValue.match(idRegex)[1];
 		}
 
-		const result = settings.updateSetting(interaction.guild, chosenSetting, [chosenValue]);
+		const result = settings.updateSetting(interaction.guild, chosenSetting, [
+			chosenValue,
+		]);
 		if (result !== 0) {
-			const errorEmbed = embed('❣️ **There was an error updating that setting.**');
+			const errorEmbed = embed(
+				'❣️ **There was an error updating that setting.**'
+			);
 			errorEmbed.addField('Error:', result);
 			return interaction.editReply({
-				embeds: [errorEmbed]
+				embeds: [errorEmbed],
 			});
 		}
 
 		guildSettings = settings.getSettings(interaction.guild.id);
 
 		return interaction.editReply({
-			embeds: [embed(`💖 **Settings updated:** set ${settingsPrettifier[chosenSetting]} to \`${transformer(chosenSetting, guildSettings[chosenSetting], interaction)}\``)]
+			embeds: [
+				embed(
+					`💖 **Settings updated:** set ${
+						settingsPrettifier[chosenSetting]
+					} to \`${transformer(
+						chosenSetting,
+						guildSettings[chosenSetting],
+						interaction
+					)}\``
+				),
+			],
 		});
-	}
-
+	},
 };

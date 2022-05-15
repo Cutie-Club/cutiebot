@@ -6,8 +6,9 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('prune')
 		.setDescription('Delete messages.')
-		.addIntegerOption(option =>
-			option.setName('amount')
+		.addIntegerOption((option) =>
+			option
+				.setName('amount')
 				.setDescription('The amount of messages to delete (1-99).')
 				.setRequired(true)
 		),
@@ -16,64 +17,97 @@ module.exports = {
 
 		await interaction.reply({
 			embeds: [embed(`💞 **Attempting to delete ${amount} messages...**`)],
-			ephemeral: true
+			ephemeral: true,
 		});
 
-		if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES, true)) {
+		if (
+			!interaction.member.permissions.has(
+				Permissions.FLAGS.MANAGE_MESSAGES,
+				true
+			)
+		) {
 			return await interaction.editReply({
-				embeds: [embed('❣️ **You don\'t have permission to manage messages in this channel.**')]
+				embeds: [
+					embed(
+						"❣️ **You don't have permission to manage messages in this channel.**"
+					),
+				],
 			});
 		}
 
-		if (!interaction.channel.permissionsFor(interaction.guild.me).has('MANAGE_MESSAGES', false)) {
+		if (
+			!interaction.channel
+				.permissionsFor(interaction.guild.me)
+				.has('MANAGE_MESSAGES', false)
+		) {
 			return await interaction.editReply({
-				embeds: [embed('❣️ **I don\'t have permission to manage messages in this channel.**')]
+				embeds: [
+					embed(
+						"❣️ **I don't have permission to manage messages in this channel.**"
+					),
+				],
 			});
 		}
 
 		if (amount < 1 || amount > 99) {
 			return await interaction.editReply({
-				embeds: [embed('❣️ **You need to input a number between 1 and 99.**')]
+				embeds: [embed('❣️ **You need to input a number between 1 and 99.**')],
 			});
 		}
 
 		if (amount > 1) {
-			interaction.channel.bulkDelete(amount, true)
-				.then(messages => {
-					log.info(`${interaction.user.username} deleted ${messages.size} messages in #${interaction.channel.name}, on ${interaction.guild.name}.`);
-					interaction.editReply({
-						embeds: [embed(`💖 **Deleted ${messages.size} message${messages.size === 1 ? '':'s'}.** 🔥`)]
-					});
-				})
-				.catch(err => {
-					log.error(err);
-					interaction.editReply({
-						embeds: [embed('💔 **There was an error trying to prune messages in this channel!**')]
-					});				
+			try {
+				const messages = await interaction.channel.bulkDelete(amount, true);
+				log.info(
+					`${interaction.user.username} deleted ${messages.size} messages in #${interaction.channel.name}, on ${interaction.guild.name}.`
+				);
+				await interaction.editReply({
+					embeds: [
+						embed(
+							`💖 **Deleted ${messages.size} message${
+								messages.size === 1 ? '' : 's'
+							}.** 🔥`
+						),
+					],
 				});
+			} catch (error) {
+				log.error(error);
+				interaction.editReply({
+					embeds: [
+						embed(
+							'💔 **There was an error trying to prune messages in this channel!**'
+						),
+					],
+				});
+			}
 		} else {
 			const messages = await interaction.channel.messages.fetch({ limit: 1 });
 			const messageToDelete = messages.first();
 
 			if (messageToDelete === undefined) {
 				return interaction.editReply({
-					embeds: [embed('❣️ **No message found.**')]
+					embeds: [embed('❣️ **No message found.**')],
 				});
 			}
 
 			try {
 				await messageToDelete.delete();
-				log.info(`${interaction.user.username} deleted 1 message in #${interaction.channel.name}, on ${interaction.guild.name}.`);
+				log.info(
+					`${interaction.user.username} deleted 1 message in #${interaction.channel.name}, on ${interaction.guild.name}.`
+				);
 				interaction.editReply({
-					embeds: [embed('💖 **Deleted 1 message.** 🔥')]
+					embeds: [embed('💖 **Deleted 1 message.** 🔥')],
 				});
-			} catch (err) {
-				log.error(err);
+			} catch (error) {
+				log.error(error);
 				interaction.editReply({
-					embeds: [embed('💔 **There was an error trying to prune messages in this channel!**')]
-				});	
+					embeds: [
+						embed(
+							'💔 **There was an error trying to prune messages in this channel!**'
+						),
+					],
+				});
 			}
-			
 		}
 	},
 };

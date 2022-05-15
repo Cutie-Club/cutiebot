@@ -8,12 +8,15 @@ module.exports = {
 	execute(client) {
 		log.time('completed');
 		log.info(
-			`Logged in as ${client.user.tag}, on ${new Date().toLocaleString('en-GB', {
-				weekday: 'long',
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric',
-			})}.`
+			`Logged in as ${client.user.tag}, on ${new Date().toLocaleString(
+				'en-GB',
+				{
+					weekday: 'long',
+					month: 'long',
+					year: 'numeric',
+					day: 'numeric',
+				}
+			)}.`
 		);
 		log.timeBetween('startup', 'completed');
 

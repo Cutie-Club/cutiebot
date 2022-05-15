@@ -6,13 +6,15 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('kick')
 		.setDescription('Kick a user.')
-		.addUserOption(option =>
-			option.setName('target')
+		.addUserOption((option) =>
+			option
+				.setName('target')
 				.setDescription('The user to kick.')
 				.setRequired(true)
 		)
-		.addStringOption(option =>
-			option.setName('reason')
+		.addStringOption((option) =>
+			option
+				.setName('reason')
 				.setDescription('The reason for kicking this user.')
 		),
 	async execute(interaction) {
@@ -22,18 +24,24 @@ module.exports = {
 
 		await interaction.reply({
 			embeds: [embed(`💞 **Attempting to kick ${user}...**`)],
-			ephemeral: true
+			ephemeral: true,
 		});
 
-		if (!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS, true)) {
+		if (
+			!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS, true)
+		) {
 			return await interaction.editReply({
-				embeds: [embed('❣️ **You don\'t have permission to kick users.**')]
+				embeds: [embed("❣️ **You don't have permission to kick users.**")],
 			});
 		}
 
-		if (!interaction.channel.permissionsFor(interaction.guild.me).has('KICK_MEMBERS', false)) {
+		if (
+			!interaction.channel
+				.permissionsFor(interaction.guild.me)
+				.has('KICK_MEMBERS', false)
+		) {
 			return await interaction.editReply({
-				embeds: [embed('❣️ **I don\'t have permission to kick users.**')]
+				embeds: [embed("❣️ **I don't have permission to kick users.**")],
 			});
 		}
 
@@ -41,14 +49,23 @@ module.exports = {
 
 		try {
 			member.kick(`${reason}`);
-			log.info(`${interaction.user.username} kicked ${user.tag}, in #${interaction.channel.name}, on ${interaction.guild.name}${reason === null ? '.' : withReason}`);
+			log.info(
+				`${interaction.user.username} kicked ${user.tag}, in #${
+					interaction.channel.name
+				}, on ${interaction.guild.name}${reason === null ? '.' : withReason}`
+			);
 			interaction.editReply({
-				embeds: [embed(`💖 **Kicked ${user}.** 👟`).addField('Reason', (reason || 'No reason provided.'))]
+				embeds: [
+					embed(`💖 **Kicked ${user}.** 👟`).addField(
+						'Reason',
+						reason || 'No reason provided.'
+					),
+				],
 			});
 		} catch (err) {
 			log.error(err);
 			interaction.editReply({
-				embeds: [embed('💔 **There was an error trying to kick that user.**')]
+				embeds: [embed('💔 **There was an error trying to kick that user.**')],
 			});
 		}
 	},
