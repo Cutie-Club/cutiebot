@@ -1,4 +1,5 @@
 const db = require('../utils/database.js');
+const setActivity = require('../utils/setActivity.js');
 const settings = require('../utils/settings.js');
 
 module.exports = {
@@ -13,18 +14,6 @@ module.exports = {
 
 		log.info(`Removed settings for ${guild.name}`);
 
-		guild.client.user
-			.setActivity(
-				`${guild.client.guilds.cache.size} server${
-					guild.client.guilds.cache.size !== 1 ? 's' : ''
-				}.`,
-				{ type: 'WATCHING' }
-			)
-			.then((activity) =>
-				log.info(
-					`Set activity to ${activity.activities[0].type} ${activity.activities[0].name}`
-				)
-			)
-			.catch(log.error);
+		setActivity(guild);
 	},
 };
