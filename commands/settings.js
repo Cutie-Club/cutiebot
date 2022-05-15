@@ -6,27 +6,39 @@ const embed = require('../utils/embed.js');
 const idResolver = (collection, id) => {
 	const item = collection.get(id);
 	if (item) return item.name;
-	return 'ERROR';
+	throw new Error('ID not resolvable.', id);
 };
 
 const rolesFormatter = (roles, message) =>
 	roles
 		.map((id) => {
-			const roleName = idResolver(message.guild.roles.cache, id);
-			return roleName;
+			try {
+				const roleName = idResolver(message.guild.roles.cache, id);
+				return roleName;
+			} catch (error) {
+				log.error(error);
+				return;
+			}
 		})
 		.join('\n');
 
-const transformations = {
+const settingsTransformer = {
 	role_cmds: (value) => Boolean(value),
 	welcome_msgs: (value) => Boolean(value),
 	role_blacklist: rolesFormatter,
 	mod_role: rolesFormatter,
-	welcome_channel_id: (id, message) =>
-		`#${idResolver(message.guild.channels.cache, id)}`,
+	welcome_channel_id: (id, message) => {
+		try {
+			const channelName = idResolver(message.guild.channels.cache, id);
+			return `#${channelName}`;
+		} catch (error) {
+			log.error(error);
+			return;
+		}
+	},
 };
 
-const settingsPrettifier = {
+const settingStringify = {
 	role_blacklist: 'Role Blacklist',
 	mod_role: 'Mod Roles',
 	role_cmds: 'Role Commands',
@@ -34,19 +46,58 @@ const settingsPrettifier = {
 	welcome_channel_id: 'Welcome Message Channel',
 };
 
-const optionChoices = [
-	['Role Blacklist', 'role_blacklist'],
-	['Mod Roles', 'mod_roles'],
-	['Role Commands', 'role_cmds'],
-	['Welcome Messages', 'welcome_msgs'],
-	['Welcome Channel', 'welcome_channel_id'],
-];
-
 const transformer = (setting, value, message) => {
 	if (value === null || value === undefined) return 'not set';
-	if (Object.keys(transformations).includes(setting))
-		return transformations[setting](value, message);
+	if (Object.keys(settingsTransformer).includes(setting))
+		return settingsTransformer[setting](value, message);
 	return value;
+};
+
+const updateSettings = (interaction, guildSettings) => {
+	const chosenSetting = interaction.options.getString('setting');
+	let chosenValue = interaction.options.getString('value');
+
+	const idExtractionRequired = [
+		'role_blacklist',
+		'mod_role',
+		'welcome_channel_id',
+	];
+
+	const idRegex = /^<(?:@&|#)(\d+)>$/;
+
+	if (idExtractionRequired.includes(chosenSetting)) {
+		chosenValue = chosenValue.match(idRegex)[1];
+	}
+
+	const result = settings.updateSetting(interaction.guild, chosenSetting, [
+		chosenValue,
+	]);
+
+	if (result !== 0) {
+		const errorEmbed = embed(
+			'❣️ **There was an error updating that setting.**'
+		);
+		errorEmbed.addField('Error:', result);
+		return interaction.editReply({
+			embeds: [errorEmbed],
+		});
+	}
+
+	guildSettings = settings.getSettings(interaction.guild.id);
+
+	return interaction.editReply({
+		embeds: [
+			embed(
+				`💖 **Settings updated:** set ${
+					settingStringify[chosenSetting]
+				} to \`${transformer(
+					chosenSetting,
+					guildSettings[chosenSetting],
+					interaction
+				)}\``
+			),
+		],
+	});
 };
 
 module.exports = {
@@ -67,7 +118,9 @@ module.exports = {
 						.setName('setting')
 						.setDescription('The setting to update.')
 						.setRequired(true)
-						.addChoices(optionChoices)
+						.addChoices(
+							Object.entries(settingStringify).map((pair) => pair.reverse())
+						)
 				)
 				.addStringOption((option) =>
 					option
@@ -98,57 +151,19 @@ module.exports = {
 
 		settingsArray.forEach(([settingName, settingValue]) => {
 			settingsEmbed.addField(
-				`**${settingsPrettifier[settingName]}**`,
+				`**${settingStringify[settingName]}**`,
 				`\`\`\`js\n${transformer(settingName, settingValue, interaction)}\`\`\``
 			);
 		});
 
-		if (interaction.options.getSubcommand() === 'view') {
-			return interaction.editReply({ embeds: [settingsEmbed] });
+		switch (interaction.options.getSubcommand()) {
+			case 'view':
+				interaction.editReply({ embeds: [settingsEmbed] });
+				break;
+
+			case 'update':
+				updateSettings(interaction, guildSettings);
+				break;
 		}
-
-		// getSubcommand === 'update'
-		const chosenSetting = interaction.options.getString('setting');
-		let chosenValue = interaction.options.getString('value');
-
-		const idExtractionRequired = [
-			'role_blacklist',
-			'mod_role',
-			'welcome_channel_id',
-		];
-		const idRegex = /^<(?:@&|#)(\d+)>$/;
-
-		if (idExtractionRequired.includes(chosenSetting)) {
-			chosenValue = chosenValue.match(idRegex)[1];
-		}
-
-		const result = settings.updateSetting(interaction.guild, chosenSetting, [
-			chosenValue,
-		]);
-		if (result !== 0) {
-			const errorEmbed = embed(
-				'❣️ **There was an error updating that setting.**'
-			);
-			errorEmbed.addField('Error:', result);
-			return interaction.editReply({
-				embeds: [errorEmbed],
-			});
-		}
-
-		guildSettings = settings.getSettings(interaction.guild.id);
-
-		return interaction.editReply({
-			embeds: [
-				embed(
-					`💖 **Settings updated:** set ${
-						settingsPrettifier[chosenSetting]
-					} to \`${transformer(
-						chosenSetting,
-						guildSettings[chosenSetting],
-						interaction
-					)}\``
-				),
-			],
-		});
 	},
 };

@@ -32,7 +32,7 @@ module.exports = {
 				embeds: [catEmbed],
 			});
 		} catch (error) {
-			console.log(error);
+			log.error(error);
 		}
 	},
 };
