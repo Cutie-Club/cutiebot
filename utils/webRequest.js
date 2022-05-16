@@ -13,7 +13,11 @@ const getRequest = (url) => {
 
 				// The whole response has been received
 				res.on('end', () => {
-					resolve(JSON.parse(data));
+					try {
+						resolve(JSON.parse(data));
+					} catch (error) {
+						reject(error);
+					}
 				});
 			})
 			.on('error', (err) => {
