@@ -11,8 +11,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
-    "dev:start": "nodemon index.js",
-    "start": "NODE_ENV=production node index.js"
+    "dev:start": "node deploy-commands.js && nodemon index.js",
+    "start": "NODE_ENV=production node deploy-commands.js && node index.js"
   },
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
