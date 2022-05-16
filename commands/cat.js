@@ -33,6 +33,19 @@ module.exports = {
 			});
 		} catch (error) {
 			log.error(error);
+
+			let errorReply = `🙀 **No ${string} cats found!**`;
+
+			if (string == undefined || string == null) {
+				errorReply = '🙀 **No cats found!**';
+			}
+
+			let errorEmbed = embed(errorReply);
+
+			await interaction.editReply({
+				embeds: [errorEmbed],
+				ephemeral: true,
+			});
 		}
 	},
 };
