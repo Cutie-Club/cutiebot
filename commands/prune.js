@@ -55,12 +55,14 @@ module.exports = {
 			});
 		}
 
-		if (amount > 1) {
-			try {
+		try {
+			if (amount > 1) {
 				const messages = await interaction.channel.bulkDelete(amount, true);
+
 				log.info(
 					`${interaction.user.username} deleted ${messages.size} messages in #${interaction.channel.name}, on ${interaction.guild.name}.`
 				);
+
 				await interaction.editReply({
 					embeds: [
 						embed(
@@ -70,27 +72,16 @@ module.exports = {
 						),
 					],
 				});
-			} catch (error) {
-				log.error(error);
-				interaction.editReply({
-					embeds: [
-						embed(
-							'💔 **There was an error trying to prune messages in this channel!**'
-						),
-					],
-				});
-			}
-		} else {
-			const messages = await interaction.channel.messages.fetch({ limit: 1 });
-			const messageToDelete = messages.first();
+			} else {
+				const messages = await interaction.channel.messages.fetch({ limit: 1 });
+				const messageToDelete = messages.first();
 
-			if (messageToDelete === undefined) {
-				return interaction.editReply({
-					embeds: [embed('❣️ **No message found.**')],
-				});
-			}
+				if (messageToDelete === undefined) {
+					return interaction.editReply({
+						embeds: [embed('❣️ **No message found.**')],
+					});
+				}
 
-			try {
 				await messageToDelete.delete();
 				log.info(
 					`${interaction.user.username} deleted 1 message in #${interaction.channel.name}, on ${interaction.guild.name}.`
@@ -98,16 +89,16 @@ module.exports = {
 				interaction.editReply({
 					embeds: [embed('💖 **Deleted 1 message.** 🔥')],
 				});
-			} catch (error) {
-				log.error(error);
-				interaction.editReply({
-					embeds: [
-						embed(
-							'💔 **There was an error trying to prune messages in this channel!**'
-						),
-					],
-				});
 			}
+		} catch (error) {
+			log.error(error);
+			interaction.editReply({
+				embeds: [
+					embed(
+						'💔 **There was an error trying to prune messages in this channel!**'
+					),
+				],
+			});
 		}
 	},
 };

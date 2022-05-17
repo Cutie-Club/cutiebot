@@ -100,6 +100,10 @@ const updateSettings = (interaction, guildSettings) => {
 	});
 };
 
+const viewSettings = (interaction, settingsEmbed) => {
+	return interaction.editReply({ embeds: [settingsEmbed] });
+};
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('settings')
@@ -158,7 +162,7 @@ module.exports = {
 
 		switch (interaction.options.getSubcommand()) {
 			case 'view':
-				interaction.editReply({ embeds: [settingsEmbed] });
+				viewSettings(interaction, settingsEmbed);
 				break;
 
 			case 'update':

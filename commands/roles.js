@@ -125,10 +125,6 @@ module.exports = {
 			rolesEmbed.addField("You don't have any assigned roles.");
 		}
 
-		if (interaction.options.getSubcommand() === 'view') {
-			return interaction.editReply({ embeds: [rolesEmbed] });
-		}
-
 		if (!guildSettings.role_cmds) {
 			return interaction.editReply({
 				embeds: [embed('❣ **Role commands are disabled.**')],
@@ -170,6 +166,10 @@ module.exports = {
 		}
 
 		switch (interaction.options.getSubcommand()) {
+			case 'view':
+				await interaction.editReply({ embeds: [rolesEmbed] });
+				break;
+
 			case 'add':
 				addRole(interaction, chosenRole);
 				break;
