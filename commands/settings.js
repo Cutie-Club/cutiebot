@@ -100,7 +100,20 @@ const updateSettings = (interaction, guildSettings) => {
 	});
 };
 
-const viewSettings = (interaction, settingsEmbed) => {
+const viewSettings = (interaction, guildSettings) => {
+	const settingsArray = Object.entries(guildSettings);
+
+	const settingsEmbed = embed('')
+		.setTitle(`⚙️ Settings for ${interaction.guild.name}`)
+		.setThumbnail(interaction.guild.iconURL());
+
+	settingsArray.forEach(([settingName, settingValue]) => {
+		settingsEmbed.addField(
+			`**${settingStringify[settingName]}**`,
+			`\`\`\`js\n${transformer(settingName, settingValue, interaction)}\`\`\``
+		);
+	});
+
 	return interaction.editReply({ embeds: [settingsEmbed] });
 };
 
@@ -147,22 +160,10 @@ module.exports = {
 		}
 
 		let guildSettings = settings.getSettings(interaction.guild.id);
-		const settingsArray = Object.entries(guildSettings);
-
-		let settingsEmbed = embed('')
-			.setTitle(`⚙️ Settings for ${interaction.guild.name}`)
-			.setThumbnail(interaction.guild.iconURL());
-
-		settingsArray.forEach(([settingName, settingValue]) => {
-			settingsEmbed.addField(
-				`**${settingStringify[settingName]}**`,
-				`\`\`\`js\n${transformer(settingName, settingValue, interaction)}\`\`\``
-			);
-		});
 
 		switch (interaction.options.getSubcommand()) {
 			case 'view':
-				viewSettings(interaction, settingsEmbed);
+				viewSettings(interaction, guildSettings);
 				break;
 
 			case 'update':

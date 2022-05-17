@@ -2,6 +2,11 @@ const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 
+const pluraliser = (string, itemCount) => {
+	if (itemCount > 1) return `${string}s`;
+	return string;
+};
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('prune')
@@ -16,7 +21,14 @@ module.exports = {
 		const amount = interaction.options.getInteger('amount');
 
 		await interaction.reply({
-			embeds: [embed(`💞 **Attempting to delete ${amount} messages...**`)],
+			embeds: [
+				embed(
+					`💞 **Attempting to delete ${amount} ${pluraliser(
+						'message',
+						amount
+					)}...**`
+				),
+			],
 			ephemeral: true,
 		});
 
@@ -56,40 +68,33 @@ module.exports = {
 		}
 
 		try {
+			let messages;
+
 			if (amount > 1) {
-				const messages = await interaction.channel.bulkDelete(amount, true);
-
-				log.info(
-					`${interaction.user.username} deleted ${messages.size} messages in #${interaction.channel.name}, on ${interaction.guild.name}.`
-				);
-
-				await interaction.editReply({
-					embeds: [
-						embed(
-							`💖 **Deleted ${messages.size} message${
-								messages.size === 1 ? '' : 's'
-							}.** 🔥`
-						),
-					],
-				});
+				messages = await interaction.channel.bulkDelete(amount, true);
 			} else {
-				const messages = await interaction.channel.messages.fetch({ limit: 1 });
+				messages = await interaction.channel.messages.fetch({ limit: 1 });
 				const messageToDelete = messages.first();
-
-				if (messageToDelete === undefined) {
-					return interaction.editReply({
-						embeds: [embed('❣️ **No message found.**')],
-					});
-				}
-
 				await messageToDelete.delete();
-				log.info(
-					`${interaction.user.username} deleted 1 message in #${interaction.channel.name}, on ${interaction.guild.name}.`
-				);
-				interaction.editReply({
-					embeds: [embed('💖 **Deleted 1 message.** 🔥')],
-				});
 			}
+
+			log.info(
+				`${interaction.user.username} deleted ${messages.size} ${pluraliser(
+					'message',
+					amount
+				)} in #${interaction.channel.name}, on ${interaction.guild.name}.`
+			);
+
+			await interaction.editReply({
+				embeds: [
+					embed(
+						`💖 **Deleted ${messages.size} ${pluraliser(
+							'message',
+							amount
+						)}.** 🔥`
+					),
+				],
+			});
 		} catch (error) {
 			log.error(error);
 			interaction.editReply({

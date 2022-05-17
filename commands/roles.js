@@ -54,6 +54,39 @@ const removeRole = async (interaction, chosenRole) => {
 		);
 };
 
+const viewRoles = async (interaction, guildSettings) => {
+	const rolesEmbed = embed('').setTitle(
+		"💖 **Here's a list of all the assignable roles:**"
+	);
+
+	rolesEmbed.addField(
+		`Roles in ${interaction.guild.name}:`,
+		assignableRoles.join('\n')
+	);
+
+	let roles = Array.from(interaction.guild.roles.cache.values());
+	let assignableRoles = roles.slice();
+
+	if (guildSettings.role_blacklist) {
+		assignableRoles = assignableRoles.filter(
+			(role) => !guildSettings.role_blacklist.includes(role.id)
+		);
+	}
+
+	assignableRoles = assignableRoles.filter(filterManagedRoles);
+
+	let userRoles = Array.from(interaction.member.roles.cache.values());
+	let cleanedUserRoles = userRoles.filter(filterManagedRoles);
+
+	if (cleanedUserRoles.length) {
+		rolesEmbed.addField('Your roles:', `${cleanedUserRoles.join(', ')}`);
+	} else {
+		rolesEmbed.addField("You don't have any assigned roles.");
+	}
+
+	await interaction.editReply({ embeds: [rolesEmbed] });
+};
+
 const filterManagedRoles = (role) => {
 	if (role.name === '@everyone') return false;
 	if (role.managed) return false;
@@ -96,38 +129,19 @@ module.exports = {
 
 		const guildSettings = settings.getSettings(interaction.guild.id);
 
-		let roles = Array.from(interaction.guild.roles.cache.values());
-		let assignableRoles = roles.slice();
-
-		if (guildSettings.role_blacklist) {
-			assignableRoles = assignableRoles.filter(
-				(role) => !guildSettings.role_blacklist.includes(role.id)
-			);
-		}
-
-		assignableRoles = assignableRoles.filter(filterManagedRoles);
-
-		const rolesEmbed = embed('').setTitle(
-			"💖 **Here's a list of all the assignable roles:**"
-		);
-
-		rolesEmbed.addField(
-			`Roles in ${interaction.guild.name}:`,
-			assignableRoles.join('\n')
-		);
-
-		let userRoles = Array.from(interaction.member.roles.cache.values());
-		let cleanedUserRoles = userRoles.filter(filterManagedRoles);
-
-		if (cleanedUserRoles.length) {
-			rolesEmbed.addField('Your roles:', `${cleanedUserRoles.join(', ')}`);
-		} else {
-			rolesEmbed.addField("You don't have any assigned roles.");
-		}
-
 		if (!guildSettings.role_cmds) {
 			return interaction.editReply({
-				embeds: [embed('❣ **Role commands are disabled.**')],
+				embeds: [embed('❣️ **Role commands are disabled.**')],
+			});
+		}
+
+		if (
+			!interaction.channel
+				.permissionsFor(interaction.guild.me)
+				.has('MANAGE_ROLES', false)
+		) {
+			return interaction.editReply({
+				embeds: [embed("❣️ **I don't have permission to manage roles.**")],
 			});
 		}
 
@@ -147,16 +161,6 @@ module.exports = {
 			});
 		}
 
-		if (
-			!interaction.channel
-				.permissionsFor(interaction.guild.me)
-				.has('MANAGE_ROLES', false)
-		) {
-			return interaction.editReply({
-				embeds: [embed("❣️ **I don't have permission to manage roles.**")],
-			});
-		}
-
 		if (guildSettings.role_blacklist) {
 			if (guildSettings.role_blacklist.includes(chosenRole.id)) {
 				return interaction.editReply({
@@ -167,7 +171,7 @@ module.exports = {
 
 		switch (interaction.options.getSubcommand()) {
 			case 'view':
-				await interaction.editReply({ embeds: [rolesEmbed] });
+				viewRoles(interaction, guildSettings);
 				break;
 
 			case 'add':
