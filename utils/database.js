@@ -1,7 +1,3 @@
-// otherwise deploy-commands.js throws an error
-const loggerInit = require('./logger.js');
-loggerInit();
-
 const Database = require('better-sqlite3');
 const fs = require('fs');
 

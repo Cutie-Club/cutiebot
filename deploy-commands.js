@@ -1,4 +1,6 @@
 require('dotenv').config();
+const loggerInit = require('./utils/logger.js');
+loggerInit();
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.CLIENT_ID;
@@ -22,19 +24,23 @@ const rest = new REST({ version: '9' }).setToken(token);
 
 (async () => {
 	try {
-		console.log('Started refreshing application (/) commands.');
-
 		if (process.env.NODE_ENV == 'production') {
+			log.info('Refreshing global commands.');
 			await rest.put(Routes.applicationCommands(clientId), {
 				body: commands,
 			});
 		} else {
+			log.info('Refreshing guild commands.');
 			await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
 				body: commands,
 			});
 		}
 
-		console.log('Successfully reloaded application (/) commands.');
+		log.info(
+			`Successfully reloaded ${
+				process.env.NODE_ENV == 'production' ? 'global' : 'guild'
+			} commands.`
+		);
 	} catch (error) {
 		console.error(error);
 	}

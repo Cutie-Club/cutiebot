@@ -40,8 +40,8 @@ const roleListHandler = (guildId, input, settingName, validIdCollection) => {
 	return roles;
 };
 
-// settings validators
-const validSettings = {
+// settings transform functions
+const transformSetting = {
 	role_blacklist: (guild, input) =>
 		roleListHandler(guild.id, input, 'role_blacklist', guild.roles.cache),
 	mod_role: (guild, input) =>
@@ -100,7 +100,7 @@ const initFunction = (currentGuilds) => {
 
 	const guildOptions = db
 		.prepare(
-			`SELECT ${Object.keys(validSettings).join(
+			`SELECT ${Object.keys(transformSetting).join(
 				','
 			)} FROM settings WHERE guild_id IN ${generateParameterString(
 				currentGuildIDs.length
@@ -130,12 +130,12 @@ const initFunction = (currentGuilds) => {
 
 const updateSetting = (guild, setting, valueArray) => {
 	// check if supplied setting is allowed
-	if (!Object.keys(validSettings).includes(setting))
+	if (!Object.keys(transformSetting).includes(setting))
 		throw `Setting \`${setting}\` was not found.`;
 
 	let transformedInput;
 	try {
-		transformedInput = validSettings[setting](guild, valueArray);
+		transformedInput = transformSetting[setting](guild, valueArray);
 		settings[guild.id][setting] = transformedInput;
 		if (Array.isArray(transformedInput))
 			transformedInput = JSON.stringify(transformedInput);
