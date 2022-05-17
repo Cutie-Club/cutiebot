@@ -114,7 +114,11 @@ const initFunction = (currentGuilds) => {
 			guildOptionsParsed[key] = value;
 
 			if (key === 'mod_role' || key === 'role_blacklist')
-				guildOptionsParsed[key] = JSON.parse(value);
+				if (value) {
+					guildOptionsParsed[key] = JSON.parse(value);
+				} else {
+					guildOptionsParsed[key] = [];
+				}
 		});
 
 		settings[guild.id] = guildOptionsParsed;

@@ -17,7 +17,7 @@ const rolesFormatter = (roles, message) =>
 				return roleName;
 			} catch (error) {
 				log.error(error);
-				return;
+				return `ID not found (${id})`;
 			}
 		})
 		.join('\n');
@@ -77,7 +77,9 @@ const updateSettings = (interaction, guildSettings) => {
 		const errorEmbed = embed(
 			'❣️ **There was an error updating that setting.**'
 		);
+
 		errorEmbed.addField('Error:', result);
+
 		return interaction.editReply({
 			embeds: [errorEmbed],
 		});
@@ -110,7 +112,9 @@ const viewSettings = (interaction, guildSettings) => {
 	settingsArray.forEach(([settingName, settingValue]) => {
 		settingsEmbed.addField(
 			`**${settingStringify[settingName]}**`,
-			`\`\`\`js\n${transformer(settingName, settingValue, interaction)}\`\`\``
+			// space at the end of the formatted setting
+			// to prevent empty codeblock becoming a series of backticks
+			`\`\`\`js\n${transformer(settingName, settingValue, interaction)} \`\`\``
 		);
 	});
 
