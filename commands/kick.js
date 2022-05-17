@@ -1,48 +1,72 @@
-const embed = require("../utils/embed.js");
+const { Permissions } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const embed = require('../utils/embed.js');
 
 module.exports = {
-	name: "kick",
-	description: "Kicks a naughty user.",
-	aliases: ["boot", "begone"],
-	usage: "[@user]",
-	cooldown: 0,
-	guildOnly: true,
-	modOnly: true,
-	execute(message) {
-		const user = message.mentions.users.first();
+	data: new SlashCommandBuilder()
+		.setName('kick')
+		.setDescription('Kick a user.')
+		.addUserOption((option) =>
+			option
+				.setName('target')
+				.setDescription('The user to kick.')
+				.setRequired(true)
+		)
+		.addStringOption((option) =>
+			option
+				.setName('reason')
+				.setDescription('The reason for kicking this user.')
+		),
+	async execute(interaction) {
+		const member = interaction.options.getMember('target');
+		const user = interaction.options.getUser('target');
+		const reason = interaction.options.getString('reason');
 
-		if (!message.mentions.users.size) {
-			return message.channel.send({
-				embeds: [embed("❣ **You need to mention a user in order to kick them!**")]
+		await interaction.reply({
+			embeds: [embed(`💞 **Attempting to kick ${user}...**`)],
+			ephemeral: true,
+		});
+
+		if (
+			!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS, true)
+		) {
+			return await interaction.editReply({
+				embeds: [embed("❣️ **You don't have permission to kick users.**")],
 			});
 		}
 
-		if (user) {
-			const member = message.guild.member(user);
-			if (!member) {
-				return message.channel.send({
-					embeds: [embed("❣ **I can't find that user. Are they in this server?**")]
-				});
-			}
-
-			if (!member.manageable) {
-				return message.channel.send({
-					embeds: [embed("❣ **I don't have the correct permissions to do that.**")]
-				});
-			}
-
-			member.kick(`Kicked by ${message.author.username} via command.`)
-				.then(() => {
-					message.channel.send({
-						embeds: [embed(`💖 **${user.tag} was kicked.** 👟`)]
-					});
-				})
-				.catch(err => {
-					log.error(err);
-					message.channel.send({
-						embeds: [embed("💔 **There was an error trying to kick that user!**")]
-					});
-				});
+		if (
+			!interaction.channel
+				.permissionsFor(interaction.guild.me)
+				.has('KICK_MEMBERS', false)
+		) {
+			return await interaction.editReply({
+				embeds: [embed("❣️ **I don't have permission to kick users.**")],
+			});
 		}
-	}
+
+		let withReason = `, with reason "${reason}".`;
+
+		try {
+			member.kick(`${reason}`);
+			log.info(
+				`${interaction.user.username} kicked ${user.tag}, in #${
+					interaction.channel.name
+				}, on ${interaction.guild.name}${reason === null ? '.' : withReason}`
+			);
+			interaction.editReply({
+				embeds: [
+					embed(`💖 **Kicked ${user}.** 👟`).addField(
+						'Reason',
+						reason || 'No reason provided.'
+					),
+				],
+			});
+		} catch (err) {
+			log.error(err);
+			interaction.editReply({
+				embeds: [embed('💔 **There was an error trying to kick that user.**')],
+			});
+		}
+	},
 };

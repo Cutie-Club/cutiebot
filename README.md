@@ -23,10 +23,6 @@ Cutiebot requires the following permissions;
 
 (Please note that you *will* need the `Administrator` permission on the server you wish to add Cutiebot to!)
 
-## Contributing
-
-If you would like to open a PR, please check [the contributing guide](https://github.com/Cutie-Club/cutiebot/blob/master/CONTRIBUTING.md).
-
 ## Development Requirements
 
 - `git` [version control](https://git-scm.com/).

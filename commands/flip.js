@@ -1,24 +1,22 @@
-const embed = require("../utils/embed.js");
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const embed = require('../utils/embed.js');
+const wait = require('util').promisify(setTimeout);
+
+const flip = () => {
+	return Math.random() >= 0.5 ? 'Heads' : 'Tails';
+};
 
 module.exports = {
-	name: "flip",
-	description: "Flips a coin!",
-	cooldown: 5,
-	guildOnly: false,
-	execute(message) {
-		const flip = () => {
-		  return (Math.random() >= 0.5) ? 'Heads' : 'Tails';
-		};
-
-		message.channel.send({
-			embeds: [embed(`💞 **Flipping a coin...**`)]
-		})
-		  .then(msg => {
-		    setTimeout(() => {
-		      msg.edit({
-						embeds: [embed(`💖 **${flip()}!**`)]
-					});
-		    }, 2000);
-			});
-	}
+	data: new SlashCommandBuilder()
+		.setName('flip')
+		.setDescription('Flips a coin.'),
+	async execute(interaction) {
+		await interaction.reply({
+			embeds: [embed('💞 **Flipping a coin...**')],
+		});
+		await wait(2000);
+		await interaction.editReply({
+			embeds: [embed(`💖 **${flip()}!**`)],
+		});
+	},
 };

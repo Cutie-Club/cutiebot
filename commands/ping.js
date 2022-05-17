@@ -1,16 +1,25 @@
-const embed = require("../utils/embed.js");
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const embed = require('../utils/embed.js');
 
 module.exports = {
-	name: "ping",
-	description: "Shows round trip latency",
-	cooldown: 5,
-	guildOnly: false,
-	execute(message) {
-		message.channel.send({
-			embeds: [embed(`**💖 Ping!**`).addFields(
-				{ name: `Bot Latency`, value: `\`${Date.now() - message.createdTimestamp}ms\`` },
-				{ name: `API Latency`, value: `\`${message.client.ws.ping}ms\`` }
-			)]
+	data: new SlashCommandBuilder()
+		.setName('ping')
+		.setDescription('Shows round trip latency.'),
+	async execute(interaction) {
+		await interaction.reply({
+			embeds: [
+				embed('**💖 Ping!**').addFields(
+					{
+						name: 'Bot Latency',
+						value: `\`${Date.now() - interaction.createdTimestamp}ms\``,
+					},
+					{
+						name: 'API Latency',
+						value: `\`${interaction.client.ws.ping}ms\``,
+					}
+				),
+			],
+			ephemeral: true,
 		});
-	}
+	},
 };

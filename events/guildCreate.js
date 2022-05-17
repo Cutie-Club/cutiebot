@@ -1,20 +1,21 @@
-const db = require("../utils/database.js");
-const settings = require("../utils/settings.js");
+const db = require('../utils/database.js');
+const setActivity = require('../utils/setActivity.js');
+const settings = require('../utils/settings.js');
 
-module.exports = (client, guild) => {
-	guild.members.fetch({ user: guild.ownerID }).then((owner) => {
-		console.log(owner);
-		log.info(`Joined ${guild.name}, owned by ${owner.user.username}.`);
+module.exports = {
+	name: 'guildCreate',
+	execute(guild) {
+		guild.fetchOwner().then((owner) => {
+			log.info(`Joined ${guild.name}, owned by ${owner.user.username}.`);
 
-		db.prepare("INSERT INTO settings (guild_id) VALUES (?);").run(guild.id);
-		
-		const currentGuilds = Array.from(client.guilds.cache.values());
-		settings.init(currentGuilds);
+			db.prepare('INSERT INTO settings (guild_id) VALUES (?);').run(guild.id);
 
-		log.info(`Created settings for ${guild.name}`);
+			const currentGuilds = Array.from(guild.client.guilds.cache.values());
+			settings.init(currentGuilds);
 
-		client.user.setActivity(`${client.guilds.cache.size} server${client.guilds.cache.size !== 1 ? "s" : ""}.`, { type: "WATCHING" })
-			.then(activity => log.info(`Set activity to ${activity.activities[0].type} ${activity.activities[0].name}`))
-			.catch(log.error);
-	});
+			log.info(`Created settings for ${guild.name}`);
+
+			setActivity(guild);
+		});
+	},
 };
