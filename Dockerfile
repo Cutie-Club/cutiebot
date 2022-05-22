@@ -1,11 +1,10 @@
-FROM node:16.14-alpine
-COPY . /usr/cutiebot
+FROM node:lts-alpine
+LABEL org.opencontainers.image.source https://github.com/cutie-club/cutiebot
 
-RUN apk update
-RUN apk upgrade --available
-RUN apk add yarn
+RUN apk add --no-cache yarn python3 build-base
 
 WORKDIR /usr/cutiebot
-RUN yarn
+COPY . /usr/cutiebot
+RUN yarn --prod
 
 CMD [ "yarn", "run", "start" ]
