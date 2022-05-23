@@ -1,7 +1,7 @@
-FROM node:lts-alpine
+FROM node:16-alpine3.15
 LABEL org.opencontainers.image.source https://github.com/cutie-club/cutiebot
 
-RUN apk add --no-cache yarn python3 build-base
+RUN apk add --no-cache yarn
 
 WORKDIR /usr/cutiebot
 COPY . /usr/cutiebot
