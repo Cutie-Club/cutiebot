@@ -4,7 +4,7 @@ The Cutie Club Discord Server bot, written using [Discord.js](https://discord.js
 
 ## Inviting to a Server
 
-To add the bot to a server, click the following link; <https://discordapp.com/api/oauth2/authorize?client_id=633716546568585216&permissions=268561478&scope=bot>
+To add the bot to a server, click the following link; <https://discord.com/api/oauth2/authorize?client_id=633716546568585216&permissions=1376805841990&scope=bot%20applications.commands>
 
 Cutiebot requires the following permissions;
 
@@ -14,10 +14,14 @@ Cutiebot requires the following permissions;
 + Ban Members
 + View Channels
 + Send Messages
++ Send Messages in Threads
 + Manage Messages
 + Embed Links
 + Attach Files
 + Read Message History
++ Read Messages / View Channels
++ Add Reactions
++ Use External Emojis
 + Add Reactions
 ```
 
@@ -42,9 +46,15 @@ Once finished, run `cd cutiebot`, followed by `yarn install`. You may need to sw
 
 You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
 
-## Docker Setup
+## Docker
 
 To run the bot via Docker, install Docker on your machine.
+
+To pull the pre-published Docker image:
+
+```sh
+docker pull ghcr.io/cutie-club/cutiebot:latest
+```
 
 Run the following to build the image:
 
@@ -61,5 +71,3 @@ docker run -d \
   --mount type=bind,source="$(pwd)/database",target=/usr/cutiebot/database \
   cutiebot:latest
 ```
-
-Alternatively, you can supply a `.env` file in the project's root directory with DISCORD_TOKEN set.
