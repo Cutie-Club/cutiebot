@@ -1,7 +1,7 @@
 FROM node:16-alpine3.15 as build
 WORKDIR /usr/cutiebot
 COPY . /usr/cutiebot
-RUN yarn install --prod
+RUN apk add --no-cache python3 build-base && yarn install --prod
 
 FROM alpine:3.15
 LABEL org.opencontainers.image.source https://github.com/cutie-club/cutiebot
