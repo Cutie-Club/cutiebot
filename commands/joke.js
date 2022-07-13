@@ -42,7 +42,7 @@ module.exports = {
 
 		// always filter out racist and sexist jokes. ew.
 		// if the channel isnt marked nsfw, blacklist nsfw.
-		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious+explicit${interaction.channel.nsfw ? '+nsfw' : ''}&safe-mode${jokeType != '' ? `&type=${jokeType}` : ''}`;
+		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious${interaction.channel.nsfw ? '+nsfw+explicit' : ''}&safe-mode${jokeType != '' ? `&type=${jokeType}` : ''}`;
 
 		try {
 			const data = await getRequest(
