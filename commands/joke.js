@@ -3,10 +3,8 @@ const embed = require('../utils/embed.js');
 const { getRequest } = require('../utils/webRequest.js');
 
 const jokeCategories = [
-	'Any',
 	'Misc',
 	'Programming',
-	'Dark',
 	'Pun',
 	'Spooky',
 	'Christmas'
@@ -42,12 +40,14 @@ module.exports = {
 
 		// always filter out racist and sexist jokes. ew.
 		// if the channel isnt marked nsfw, blacklist nsfw.
-		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious${interaction.channel.nsfw ? '+nsfw+explicit&safe-mode' : ''}${jokeType != '' ? `&type=${jokeType}` : ''}`;
+		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious${!interaction.channel.nsfw ? '+nsfw+explicit&safe-mode' : ''}${jokeType != null ? `&type=${jokeType}` : ''}`;
+
+		let url = `https://v2.jokeapi.dev/joke/${category != null ? category : jokeCategories.join(',')}${parameters}`;
 
 		try {
-			const data = await getRequest(
-				`https://v2.jokeapi.dev/joke/${category != null ? category : 'Any'}${parameters}`
-			);
+			const data = await getRequest(url);
+
+			console.log(url);
 
 			if (data.error) throw new Error(data.message, { cause: data.additionalInfo });
 
