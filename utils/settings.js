@@ -1,15 +1,15 @@
 const db = require('./database.js');
 const settings = {};
 
-const keyWords = {
-	true: ['1', 'on', 'true'],
-	false: ['0', 'off', 'false'],
+const boolLookup = {
+	true: [1, '1', 'on', 'true', true],
+	false: [0, '0', 'off', 'false', false],
 };
 
 const boolParser = (input) => {
-	if (keyWords.true.includes(input)) return 1;
-	if (keyWords.false.includes(input)) return 0;
-	throw `Invalid argument \`${input}\`, argument should be of type: \`bool\`.`;
+	if (boolLookup.true.includes(input)) return 1;
+	if (boolLookup.false.includes(input)) return 0;
+	throw new Error('Invalid argument, argument should be of type: \'bool\'.');
 };
 
 const collectionContainsId = (collection, id) => collection.has(id);
@@ -111,14 +111,19 @@ const initFunction = (currentGuilds) => {
 	currentGuilds.forEach((guild, i) => {
 		let guildOptionsParsed = {};
 		Object.entries(guildOptions[i]).forEach(([key, value]) => {
-			guildOptionsParsed[key] = value;
-
-			if (key === 'mod_role' || key === 'role_blacklist')
-				if (value) {
+			switch (key) {
+				case 'mod_role':
+				case 'role_blacklist':
 					guildOptionsParsed[key] = JSON.parse(value);
-				} else {
-					guildOptionsParsed[key] = [];
-				}
+					break;
+				case 'role_cmds':
+				case 'welcome_msgs':
+					guildOptionsParsed[key] = boolParser(value);
+					break;
+				default:
+					guildOptionsParsed[key] = value;
+					break;
+			}
 		});
 
 		settings[guild.id] = guildOptionsParsed;
