@@ -1,14 +1,14 @@
 const db = require('./database.js');
 const settings = {};
 
-const keyWords = {
+const boolLookup = {
 	true: [1, '1', 'on', 'true', true],
 	false: [0, '0', 'off', 'false', false],
 };
 
 const boolParser = (input) => {
-	if (keyWords.true.includes(input)) return 1;
-	if (keyWords.false.includes(input)) return 0;
+	if (boolLookup.true.includes(input)) return 1;
+	if (boolLookup.false.includes(input)) return 0;
 	throw new Error('Invalid argument, argument should be of type: \'bool\'.');
 };
 
