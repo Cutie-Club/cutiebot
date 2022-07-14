@@ -10,7 +10,7 @@ const jokeCategories = [
 	'Christmas'
 ];
 
-const choices = jokeCategories.map(item => ({ name: item, value: item }));
+const categoryChoices = jokeCategories.map(item => ({ name: item, value: item }));
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ module.exports = {
 			option
 				.setName('category')
 				.setDescription('Choose a category of joke.')
-				.addChoices(...choices)
+				.addChoices(...categoryChoices)
 		)
 		.addStringOption((option) =>
 			option
@@ -39,15 +39,13 @@ module.exports = {
 		const jokeType = interaction.options.getString('type');
 
 		// always filter out racist and sexist jokes. ew.
-		// if the channel isnt marked nsfw, blacklist nsfw.
+		// if the channel isn't marked nsfw, blacklist nsfw.
 		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious${!interaction.channel.nsfw ? '+nsfw+explicit&safe-mode' : ''}${jokeType != null ? `&type=${jokeType}` : ''}`;
 
 		let url = `https://v2.jokeapi.dev/joke/${category != null ? category : jokeCategories.join(',')}${parameters}`;
 
 		try {
 			const data = await getRequest(url);
-
-			console.log(url);
 
 			if (data.error) throw new Error(data.message, { cause: data.additionalInfo });
 

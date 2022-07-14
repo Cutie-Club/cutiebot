@@ -120,7 +120,7 @@ const viewSettings = (interaction, guildSettings) => {
 	return interaction.editReply({ embeds: [settingsEmbed] });
 };
 
-const choices = Object.entries(settingStringify).map(([settingDatabaseName, settingName]) => ({ name: settingName, value: settingDatabaseName }));
+const settingChoices = Object.entries(settingStringify).map(([settingDatabaseName, settingName]) => ({ name: settingName, value: settingDatabaseName }));
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -140,7 +140,7 @@ module.exports = {
 						.setName('setting')
 						.setDescription('The setting to update.')
 						.setRequired(true)
-						.addChoices(...choices)
+						.addChoices(...settingChoices)
 				)
 				.addStringOption((option) =>
 					option

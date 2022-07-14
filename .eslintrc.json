@@ -14,7 +14,7 @@
   "ignorePatterns": ["node_modules/"],
   "rules": {
     "indent": ["error", "tab", { "SwitchCase": 1 }],
-    "no-console": "off",
+    "no-console": "warn",
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-var": "error",
     "object-curly-spacing": ["error", "always"],
