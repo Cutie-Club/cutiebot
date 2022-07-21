@@ -1,15 +1,15 @@
 {
-  "restartable": "rs",
-  "ignore": [
-    "*.git",
-    "node_modules/**/node_modules",
+	"restartable": "rs",
+	"ignore": [
+		"*.git",
+		"node_modules/**/node_modules",
 		"*.md",
 		"*.example",
-    "*.test.js"
-  ],
-  "env": {
-    "NODE_ENV": "development"
-  },
-  "ext": "js,json",
-	"delay":"2000"
+		"*.test.js"
+	],
+	"env": {
+		"NODE_ENV": "development"
+	},
+	"ext": "js,json",
+	"delay": "2000"
 }

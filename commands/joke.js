@@ -2,15 +2,12 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 const { getRequest } = require('../utils/webRequest.js');
 
-const jokeCategories = [
-	'Misc',
-	'Programming',
-	'Pun',
-	'Spooky',
-	'Christmas'
-];
+const jokeCategories = ['Misc', 'Programming', 'Pun', 'Spooky', 'Christmas'];
 
-const categoryChoices = jokeCategories.map(item => ({ name: item, value: item }));
+const categoryChoices = jokeCategories.map((item) => ({
+	name: item,
+	value: item,
+}));
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -40,14 +37,19 @@ module.exports = {
 
 		// always filter out racist and sexist jokes. ew.
 		// if the channel isn't marked nsfw, blacklist nsfw.
-		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious${!interaction.channel.nsfw ? '+nsfw+explicit&safe-mode' : ''}${jokeType != null ? `&type=${jokeType}` : ''}`;
+		let parameters = `?format=json&?blacklistFlags=racist+sexist+religious${
+			!interaction.channel.nsfw ? '+nsfw+explicit&safe-mode' : ''
+		}${jokeType != null ? `&type=${jokeType}` : ''}`;
 
-		let url = `https://v2.jokeapi.dev/joke/${category != null ? category : jokeCategories.join(',')}${parameters}`;
+		let url = `https://v2.jokeapi.dev/joke/${
+			category != null ? category : jokeCategories.join(',')
+		}${parameters}`;
 
 		try {
 			const data = await getRequest(url);
 
-			if (data.error) throw new Error(data.message, { cause: data.additionalInfo });
+			if (data.error)
+				throw new Error(data.message, { cause: data.additionalInfo });
 
 			switch (data.type) {
 				case 'single':
@@ -56,13 +58,13 @@ module.exports = {
 				case 'twopart':
 					jokeEmbed.addFields([
 						{ name: 'Setup', value: data.setup },
-						{ name: 'Punchline', value: `||${data.delivery}||` }
+						{ name: 'Punchline', value: `||${data.delivery}||` },
 					]);
 					break;
 			}
 
 			jokeEmbed.setFooter({
-				text: `Category: ${data.category}`
+				text: `Category: ${data.category}`,
 			});
 
 			await interaction.editReply({

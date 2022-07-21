@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 const chalk = require('chalk');
 const { PerformanceObserver, performance } = require('perf_hooks');
 
@@ -61,7 +63,7 @@ const presets = {
 
 // disable debug logging if we're in prod
 if (process.env.NODE_ENV === 'production') {
-	presets.debug = () => {};
+	presets.debug = () => { };
 }
 
 const init = () => (global.log = presets);

@@ -58,7 +58,7 @@ for (const file of eventFiles) {
 
 process.on('unhandledRejection', (error) => {
 	log.error('Uncaught Promise Rejection');
-	console.error(error);
+	log.error(error);
 });
 
 client

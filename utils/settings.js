@@ -9,7 +9,7 @@ const boolLookup = {
 const boolParser = (input) => {
 	if (boolLookup.true.includes(input)) return 1;
 	if (boolLookup.false.includes(input)) return 0;
-	throw new Error('Invalid argument, argument should be of type: \'bool\'.');
+	throw new Error("Invalid argument, argument should be of type: 'bool'.");
 };
 
 const collectionContainsId = (collection, id) => collection.has(id);

@@ -25,7 +25,7 @@ Cutiebot requires the following permissions;
 + Add Reactions
 ```
 
-(Please note that you *will* need the `Administrator` permission on the server you wish to add Cutiebot to!)
+(Please note that you _will_ need the `Administrator` permission on the server you wish to add Cutiebot to!)
 
 ## Development Requirements
 

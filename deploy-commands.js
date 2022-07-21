@@ -37,11 +37,10 @@ const rest = new REST({ version: '9' }).setToken(token);
 		}
 
 		log.info(
-			`Successfully reloaded ${
-				process.env.NODE_ENV == 'production' ? 'global' : 'guild'
+			`Successfully reloaded ${process.env.NODE_ENV == 'production' ? 'global' : 'guild'
 			} commands.`
 		);
 	} catch (error) {
-		console.error(error);
+		log.error(error);
 	}
 })();

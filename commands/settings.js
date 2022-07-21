@@ -90,7 +90,8 @@ const updateSettings = (interaction, guildSettings) => {
 	return interaction.editReply({
 		embeds: [
 			embed(
-				`💖 **Settings updated:** set ${settingStringify[chosenSetting]
+				`💖 **Settings updated:** set ${
+					settingStringify[chosenSetting]
 				} to \`${transformer(
 					chosenSetting,
 					guildSettings[chosenSetting],
@@ -120,7 +121,12 @@ const viewSettings = (interaction, guildSettings) => {
 	return interaction.editReply({ embeds: [settingsEmbed] });
 };
 
-const settingChoices = Object.entries(settingStringify).map(([settingDatabaseName, settingName]) => ({ name: settingName, value: settingDatabaseName }));
+const settingChoices = Object.entries(settingStringify).map(
+	([settingDatabaseName, settingName]) => ({
+		name: settingName,
+		value: settingDatabaseName,
+	})
+);
 
 module.exports = {
 	data: new SlashCommandBuilder()
