@@ -1,9 +1,9 @@
-name: lint and format
+name: format
 
 on: push
 
 jobs:
-  lint_and_fmt:
+  fmt:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -15,4 +15,4 @@ jobs:
           node-version: 16
 
       - run: yarn install
-      - run: yarn lint
+      - run: yarn fmt
