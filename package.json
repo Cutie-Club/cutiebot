@@ -10,9 +10,7 @@
 	"private": true,
 	"main": "index.js",
 	"scripts": {
-		"lint": "yarn eslint .",
-		"pretty-check": "yarn prettier -c .",
-		"prettify": "yarn prettier --write .",
+		"fmt": "yarn prettier --write .",
 		"dev:start": "yarn deploy-commands && nodemon index.js",
 		"start": "NODE_ENV=production yarn deploy-commands && node index.js",
 		"deploy-commands": "node deploy-commands.js"
@@ -28,9 +26,6 @@
 		"ms": "^2.1.2"
 	},
 	"devDependencies": {
-		"eslint": "^8.19.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
 		"nodemon": "^2.0.6",
 		"prettier": "2.7.1"
 	},
