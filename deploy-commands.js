@@ -36,9 +36,9 @@ const rest = new REST({ version: '9' }).setToken(token);
 			});
 		}
 
+		// prettier-ignore
 		log.info(
-			`Successfully reloaded
-			${process.env.NODE_ENV == 'production' ? 'global' : 'guild'} commands.`
+			`Successfully reloaded ${process.env.NODE_ENV == 'production' ? 'global' : 'guild'} commands.`
 		);
 	} catch (error) {
 		log.error(error);
