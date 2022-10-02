@@ -65,7 +65,10 @@ client
 	.on('disconnect', () => log.warn('Bot is disconnecting...'))
 	.on('reconnecting', () => log.info('Bot reconnecting...'))
 	.on('debug', (debug) => log.debug(debug))
-	.on('error', (e) => log.error(e))
+	.on('error', (e) => {
+		log.error(e);
+		console.trace();
+	})
 	.on('warn', (info) => log.warn(info));
 
 client.login(token);

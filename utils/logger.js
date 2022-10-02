@@ -10,7 +10,7 @@ const obs = new PerformanceObserver((list) => {
 	const start = marks[1];
 	const end = marks[2];
 	console.log(
-		`${timestamp.time()} ${chalk.bgBlue(' TIMR ')} time between '${chalk.bold(
+		`${timestamp.iso()} ${chalk.bgBlue(' TIMR ')} time between '${chalk.bold(
 			start
 		)}' and '${chalk.bold(end)}': ${chalk.blue.bold(
 			Math.round(measurement.duration) + 'ms'
@@ -38,19 +38,22 @@ const timestamp = {
 		};
 		return `${new Date().toLocaleString('en-GB', options)}`;
 	},
+	iso: () => {
+		return `[${new Date().toISOString()}]`;
+	},
 };
 
 const presets = {
 	debug: (message) =>
-		console.debug(`${timestamp.time()} ${chalk.bgCyan(' DBUG ')} ${message}`),
+		console.debug(`${timestamp.iso()} ${chalk.bgCyan(' DBUG ')} ${message}`),
 	error: (message) =>
-		console.error(`${timestamp.time()} ${chalk.bgRed(' ERR! ')} ${message}`),
+		console.error(`${timestamp.iso()} ${chalk.bgRed(' ERR! ')} ${message}`),
 	info: (message) =>
-		console.info(`${timestamp.time()} ${chalk.bgGreen(' INFO ')} ${message}`),
+		console.info(`${timestamp.iso()} ${chalk.bgGreen(' INFO ')} ${message}`),
 	warn: (message) =>
-		console.warn(`${timestamp.time()} ${chalk.bgYellow(' WARN ')} ${message}`),
+		console.warn(`${timestamp.iso()} ${chalk.bgYellow(' WARN ')} ${message}`),
 	table: (tableArray) => {
-		console.log(`${timestamp.time()} ${chalk.bgMagenta(' TABL ')}`);
+		console.log(`${timestamp.iso()} ${chalk.bgMagenta(' TABL ')}`);
 		console.table(tableArray);
 		console.log('');
 	},
