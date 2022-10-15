@@ -18,7 +18,7 @@ const uptimeString = () => {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('info')
+		.setName('metadata')
 		.setDescription('Prints metadata.'),
 	async execute(interaction) {
 		await interaction.reply({
