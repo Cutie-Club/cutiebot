@@ -3,14 +3,8 @@ const embed = require('../utils/embed.js');
 const ms = require('ms');
 const wait = require('util').promisify(setTimeout);
 
-const gitSha =
-	process.env.GIT_SHA || '0ed46333853d1aaab845c769a88845b4fd7b9dde';
-const commitMessage =
-	process.env.COMMIT_MESSAGE ||
-	`Remove Arm images, we no longer need these (#40)
-
-* Remove Arm images, we no longer need these
-* Remove strings that aren't needed`;
+const gitSha = process.env.GIT_SHA;
+const commitMessage = process.env.COMMIT_MESSAGE;
 
 const uptimeString = () => {
 	return ms(process.uptime() * 1000, { long: true });
