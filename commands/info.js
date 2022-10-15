@@ -12,9 +12,8 @@ const commitMessage =
 * Remove Arm images, we no longer need these
 * Remove strings that aren't needed`;
 
-const uptime = async () => {
-	if (!process.uptime) await wait(1000);
-	return ms(Math.floor(process.uptime() * 1000), { long: true });
+const uptimeString = () => {
+	return ms(process.uptime() * 1000, { long: true });
 };
 
 module.exports = {
@@ -33,7 +32,7 @@ module.exports = {
 						)}\`](https://github.com/Cutie-Club/cutiebot/commit/${gitSha})`
 					)
 					.addField('Commit message', `\`\`\`text\n${commitMessage}\n\`\`\``)
-					.addField('Uptime', `${await uptime()}`),
+					.addField('Uptime', uptimeString()),
 			],
 			ephemeral: true,
 		});
