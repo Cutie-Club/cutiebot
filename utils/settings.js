@@ -34,7 +34,7 @@ const mutateArrayOfIds = (arrayToModify, itemArray, validIdCollection) => {
 };
 
 const roleListHandler = (guildId, input, settingName, validIdCollection) => {
-	const roles = (settings[guildId][settingName] || '').slice();
+	const roles = (settings[guildId][settingName] || []).slice();
 	mutateArrayOfIds(roles, input, validIdCollection);
 	if (roles.length === 0) return null;
 	return roles;
