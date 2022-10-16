@@ -22,10 +22,7 @@ module.exports = {
 						)
 						.addField(
 							'Error',
-							`\`\`\`text
-						${new Date().toISOString()}
-						${error.stack}
-						\`\`\``
+							`\`\`\`text\n${new Date().toISOString()}\n${error.stack}\n\`\`\``
 						),
 				],
 				ephemeral: true,
