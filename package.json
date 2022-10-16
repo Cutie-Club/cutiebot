@@ -11,7 +11,8 @@
 	"main": "index.js",
 	"scripts": {
 		"fmt": "yarn prettier --write .",
-		"dev:start": "yarn deploy-commands && nodemon index.js",
+		"check-fmt": "yarn prettier --check .",
+		"dev:start": "yarn deploy-commands && GIT_SHA=$(git rev-parse HEAD) COMMIT_MESSAGE=$(git log --format=%B -n 1 HEAD) nodemon index.js",
 		"start": "NODE_ENV=production yarn deploy-commands && node index.js",
 		"deploy-commands": "node deploy-commands.js"
 	},
