@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 const ms = require('ms');
-const wait = require('util').promisify(setTimeout);
 
 const gitSha = process.env.GIT_SHA;
 const commitMessage = process.env.COMMIT_MESSAGE;
