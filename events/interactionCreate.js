@@ -12,15 +12,21 @@ module.exports = {
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			log.error(error);
+			log.error(error.stack);
 			await interaction.reply({
 				embeds: [
-					embed(
-						'😿 **There was an error while executing this command!**'
-					).addField(
-						'🐛',
-						`If you could, [report this bug](https://github.com/Cutie-Club/cutiebot/issues/new/choose)! Let us know what you were doing.\n\`\`\`text\n${error}\n\`\`\``
-					),
+					embed('😿 **There was an error while executing this command!**')
+						.addField(
+							'🐛',
+							`If you could, [report this bug](https://github.com/Cutie-Club/cutiebot/issues/new/choose)! Let us know what you were doing.`
+						)
+						.addField(
+							'Error',
+							`\`\`\`text
+						${new Date().toISOString()}
+						${error.stack}
+						\`\`\``
+						),
 				],
 				ephemeral: true,
 			});
