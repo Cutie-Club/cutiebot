@@ -79,10 +79,10 @@ const removeRole = async (interaction, guildSettings) => {
 	}
 
 	await interaction.member.roles
-		.remove(chosenRole)
+		.remove(roleProvided)
 		.then(() => {
 			interaction.editReply({
-				embeds: [embed(`💖 \`${chosenRole.name}\` **role removed.**`)],
+				embeds: [embed(`💖 \`${roleProvided.name}\` **role removed.**`)],
 			});
 		})
 		.catch(() =>
