@@ -2,22 +2,62 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 const settings = require('../utils/settings.js');
 
-const addRole = async (interaction, guildSettings) => {
-	const chosenRole = getChosenRole(interaction, guildSettings);
+const viewRoles = async (interaction, guildSettings) => {
+	const rolesEmbed = embed('').setTitle(
+		"💖 **Here's a list of all the assignable roles:**"
+	);
 
-	if (
-		interaction.member.roles.cache.some((role) => role.name === chosenRole.name)
-	) {
+	const roles = Array.from(interaction.guild.roles.cache.values());
+	const assignableRoles = roles.filter((role) =>
+		isAssignableRole(role, guildSettings)
+	);
+
+	rolesEmbed.addField(
+		`Roles in ${interaction.guild.name}:`,
+		assignableRoles.join('\n')
+	);
+
+	const unmanagedUserRoles = Array.from(
+		interaction.member.roles.cache.values()
+	).filter((role) => !isManagedRole(role));
+
+	if (unmanagedUserRoles.length) {
+		rolesEmbed.addField('Your roles:', `${cleanedUserRoles.join(', ')}`);
+	} else {
+		rolesEmbed.addField("You don't have any assigned roles.");
+	}
+
+	await interaction.editReply({ embeds: [rolesEmbed] });
+};
+
+const addRole = async (interaction, guildSettings) => {
+	const roleProvided = interaction.options.getRole('role');
+
+	if (!roleProvided) {
+		return interaction.editReply({
+			embeds: [
+				embed("❣️ **I can't find that role. Did you type it correctly?**"),
+			],
+		});
+	}
+
+	if (!isAssignableRole(roleProvided, guildSettings)) {
+		return interaction.editReply({
+			embeds: [embed("💔 **You can't add that role.**")],
+		});
+	}
+
+	if (memberHasRole(interaction.member, roleProvided)) {
 		return interaction.editReply({
 			embeds: [embed('❣️ **You already have that role.**')],
 		});
 	}
 
 	await interaction.member.roles
-		.add(chosenRole)
+		.add(roleProvided)
 		.then(() => {
 			interaction.editReply({
-				embeds: [embed(`💖 \`${chosenRole.name}\` **role added.**`)],
+				embeds: [embed(`💖 \`${roleProvided.name}\` **role added.**`)],
 			});
 		})
 		.catch(() =>
@@ -30,13 +70,9 @@ const addRole = async (interaction, guildSettings) => {
 };
 
 const removeRole = async (interaction, guildSettings) => {
-	const chosenRole = getChosenRole(interaction, guildSettings);
+	const roleProvided = interaction.options.getRole('role');
 
-	if (
-		!interaction.member.roles.cache.some(
-			(role) => role.name === chosenRole.name
-		)
-	) {
+	if (!memberHasRole(interaction.member, roleProvided)) {
 		return interaction.editReply({
 			embeds: [embed("❣️ **You don't have that role.**")],
 		});
@@ -58,72 +94,20 @@ const removeRole = async (interaction, guildSettings) => {
 		);
 };
 
-const viewRoles = async (interaction, guildSettings) => {
-	const rolesEmbed = embed('').setTitle(
-		"💖 **Here's a list of all the assignable roles:**"
-	);
+const memberHasRole = (member, role) =>
+	member.roles.cache.some((memberRole) => memberRole.id === role.id);
 
-	let roles = Array.from(interaction.guild.roles.cache.values());
-	let assignableRoles = roles.slice();
-
-	rolesEmbed.addField(
-		`Roles in ${interaction.guild.name}:`,
-		assignableRoles.join('\n')
-	);
-
-	if (guildSettings.role_blacklist) {
-		assignableRoles = assignableRoles.filter(
-			(role) => !guildSettings.role_blacklist.includes(role.id)
-		);
-	}
-
-	assignableRoles = assignableRoles.filter(filterManagedRoles);
-
-	let userRoles = Array.from(interaction.member.roles.cache.values());
-	let cleanedUserRoles = userRoles.filter(filterManagedRoles);
-
-	if (cleanedUserRoles.length) {
-		rolesEmbed.addField('Your roles:', `${cleanedUserRoles.join(', ')}`);
-	} else {
-		rolesEmbed.addField("You don't have any assigned roles.");
-	}
-
-	await interaction.editReply({ embeds: [rolesEmbed] });
-};
-
-const filterManagedRoles = (role) => {
-	if (role.name === '@everyone') return false;
-	if (role.managed) return false;
+const isAssignableRole = (role, guildSettings) => {
+	if (isManagedRole(role)) return false;
+	if (
+		guildSettings.role_blacklist &&
+		guildSettings.role_blacklist.includes(role.id)
+	)
+		return false;
 	return true;
 };
 
-const getChosenRole = (interaction, guildSettings) => {
-	const chosenRole = interaction.options.getRole('role');
-
-	if (!chosenRole) {
-		return interaction.editReply({
-			embeds: [
-				embed("❣️ **I can't find that role. Did you type it correctly?**"),
-			],
-		});
-	}
-
-	if (chosenRole.name === '@everyone' || chosenRole.managed) {
-		return interaction.editReply({
-			embeds: [embed("💔 **You can't add that role.**")],
-		});
-	}
-
-	if (guildSettings.role_blacklist) {
-		if (guildSettings.role_blacklist.includes(chosenRole.id)) {
-			return interaction.editReply({
-				embeds: [embed("💔 **That role isn't self-assignable.**")],
-			});
-		}
-	}
-
-	return chosenRole;
-};
+const isManagedRole = (role) => role.name === '@everyone' || role.managed;
 
 module.exports = {
 	data: new SlashCommandBuilder()
