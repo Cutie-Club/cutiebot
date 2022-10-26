@@ -22,7 +22,7 @@ const viewRoles = async (interaction, guildSettings) => {
 	).filter((role) => !isManagedRole(role));
 
 	if (unmanagedUserRoles.length) {
-		rolesEmbed.addField('Your roles:', `${cleanedUserRoles.join(', ')}`);
+		rolesEmbed.addField('Your roles:', `${unmanagedUserRoles.join(', ')}`);
 	} else {
 		rolesEmbed.addField("You don't have any assigned roles.");
 	}
