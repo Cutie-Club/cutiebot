@@ -72,7 +72,7 @@ const addRole = async (interaction, guildSettings) => {
 const removeRole = async (interaction, guildSettings) => {
 	const roleProvided = interaction.options.getRole('role');
 
-	if (!isAssignableRole(roleProvided, guildSettings)) {
+	if (!isManagedRole(roleProvided)) {
 		return interaction.editReply({
 			embeds: [embed("💔 **You can't remove that role.**")],
 		});
