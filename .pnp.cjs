@@ -34,7 +34,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["chalk", "npm:3.0.0"],\
             ["discord-api-types", "npm:0.27.3"],\
             ["discord.js", "npm:13.8.1"],\
-            ["dotenv", "npm:16.0.1"],\
+            ["dotenv", "npm:16.0.3"],\
             ["ms", "npm:2.1.3"],\
             ["nodemon", "npm:2.0.19"],\
             ["prettier", "npm:2.7.1"]\
@@ -559,7 +559,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["chalk", "npm:3.0.0"],\
             ["discord-api-types", "npm:0.27.3"],\
             ["discord.js", "npm:13.8.1"],\
-            ["dotenv", "npm:16.0.1"],\
+            ["dotenv", "npm:16.0.3"],\
             ["ms", "npm:2.1.3"],\
             ["nodemon", "npm:2.0.19"],\
             ["prettier", "npm:2.7.1"]\
@@ -708,10 +708,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["dotenv", [\
-        ["npm:16.0.1", {\
-          "packageLocation": "./.yarn/cache/dotenv-npm-16.0.1-d99e72bb95-f459ffce07.zip/node_modules/dotenv/",\
+        ["npm:16.0.3", {\
+          "packageLocation": "./.yarn/cache/dotenv-npm-16.0.3-4cc29121dc-afcf03f373.zip/node_modules/dotenv/",\
           "packageDependencies": [\
-            ["dotenv", "npm:16.0.1"]\
+            ["dotenv", "npm:16.0.3"]\
           ],\
           "linkType": "HARD"\
         }]\

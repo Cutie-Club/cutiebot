@@ -30,44 +30,30 @@ Cutiebot requires the following permissions;
 ## Development Requirements
 
 - `git` [version control](https://git-scm.com/).
-- `node` [version 16.14.0 or higher](https://nodejs.org).
+- `node` [lts/hydrogen](https://nodejs.org).
 
 You will also need a token, if you want to stage the bot on your own server for testing. Create an application in the [Discord Developer Portal](https://discordapp.com/developers) and create a Bot User.
 
 ## Installation
 
-In your terminal, run the following command;
+In your terminal, run the following command:
 
 ```sh
 git clone https://github.com/Cutie-Club/cutiebot.git
 ```
 
-Once finished, run `cd cutiebot`, followed by `yarn install`. You may need to switch your local node install to 16.14 using `nvm` to avoid issues installing `better-sqlite3`, as prebuilt binaries are provided for node's LTS versions.
+Once finished, run `cd cutiebot`, followed by `yarn install`. You may need to switch your local node install to `lts/hydrogen` using `nvm` to avoid issues installing `better-sqlite3`, as prebuilt binaries are provided for node's LTS versions.
 
-You can start the bot using `npm run dev:start`, which starts the bot using Nodemon.
+You can start the bot using `npm run dev:start`, which starts the bot using nodemon.
 
-## Docker
+## Environment Variables
 
-To run the bot via Docker, install Docker on your machine.
+| Env Var          | Description                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------|
+| `DISCORD_TOKEN`  | The Discord token for the bot user.                                                              |
+| `CLIENT_ID`      | The ID of the bot user.                                                                          |
+| `GUILD_ID`       | Development guild ID for testing slash commands.                                                 |
+| `GIT_SHA`        | Git SHA of the latest commit at build time. Can be sourced from `git rev-parse HEAD`             |
+| `COMMIT_MESSAGE` | Message of the latest commit at build time. Can be sourced from `git log --format=%B -n 1 HEAD`  |
 
-To pull the pre-published Docker image:
-
-```sh
-docker pull ghcr.io/cutie-club/cutiebot:latest
-```
-
-Run the following to build the image:
-
-```sh
-docker build -t cutiebot .
-```
-
-You can run the image with the following command:
-
-```sh
-docker run -d \
-  --env DISCORD_TOKEN=yourTokenHere \
-  --name cutiebot \
-  --mount type=bind,source="$(pwd)/database",target=/usr/cutiebot/database \
-  cutiebot:latest
-```
+The first three environment variables are not optional. The last two, `GIT_SHA` and `COMMIT_MESSAGE`, are required for the metadata command; useful for quickly verifying the build commit in production, but not required for development.
