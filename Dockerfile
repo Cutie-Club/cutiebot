@@ -18,4 +18,4 @@ RUN apk add --no-cache nodejs
 WORKDIR /usr/cutiebot
 COPY --from=build  /usr/cutiebot /usr/cutiebot
 
-CMD node deploy-commands.js && node index.js
+CMD yarn node deploy-commands.js && yarn node index.js

@@ -1,4 +1,6 @@
-node_modules/
 database/
 .*
 *.md
+
+!.pnp.cjs
+.yarnrc.yml
