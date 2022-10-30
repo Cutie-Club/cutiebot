@@ -48,12 +48,12 @@ You can start the bot using `npm run dev:start`, which starts the bot using node
 
 ## Environment Variables
 
-| Env Var          | Description                                                                                      |
-|------------------|--------------------------------------------------------------------------------------------------|
-| `DISCORD_TOKEN`  | The Discord token for the bot user.                                                              |
-| `CLIENT_ID`      | The ID of the bot user.                                                                          |
-| `GUILD_ID`       | Development guild ID for testing slash commands.                                                 |
-| `GIT_SHA`        | Git SHA of the latest commit at build time. Can be sourced from `git rev-parse HEAD`             |
-| `COMMIT_MESSAGE` | Message of the latest commit at build time. Can be sourced from `git log --format=%B -n 1 HEAD`  |
+| Env Var          | Description                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| `DISCORD_TOKEN`  | The Discord token for the bot user.                                                             |
+| `CLIENT_ID`      | The ID of the bot user.                                                                         |
+| `GUILD_ID`       | Development guild ID for testing slash commands.                                                |
+| `GIT_SHA`        | Git SHA of the latest commit at build time. Can be sourced from `git rev-parse HEAD`            |
+| `COMMIT_MESSAGE` | Message of the latest commit at build time. Can be sourced from `git log --format=%B -n 1 HEAD` |
 
 The first three environment variables are not optional. The last two, `GIT_SHA` and `COMMIT_MESSAGE`, are required for the metadata command; useful for quickly verifying the build commit in production, but not required for development.
