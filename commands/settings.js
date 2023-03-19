@@ -1,4 +1,4 @@
-const { Permissions } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const settings = require('../utils/settings.js');
 const embed = require('../utils/embed.js');
@@ -78,7 +78,7 @@ const updateSettings = (interaction, guildSettings) => {
 			'❣️ **There was an error updating that setting.**'
 		);
 
-		errorEmbed.addField('Error:', result);
+		errorEmbed.setFields({ name: 'Error:', value: result });
 
 		return interaction.editReply({
 			embeds: [errorEmbed],
@@ -110,12 +110,16 @@ const viewSettings = (interaction, guildSettings) => {
 		.setThumbnail(interaction.guild.iconURL());
 
 	settingsArray.forEach(([settingName, settingValue]) => {
-		settingsEmbed.addField(
-			`**${settingStringify[settingName]}**`,
+		settingsEmbed.addFields({
+			name: `**${settingStringify[settingName]}**`,
 			// space at the end of the formatted setting
 			// to prevent empty codeblock becoming a series of backticks
-			`\`\`\`js\n${transformer(settingName, settingValue, interaction)} \`\`\``
-		);
+			value: `\`\`\`js\n${transformer(
+				settingName,
+				settingValue,
+				interaction
+			)} \`\`\``,
+		});
 	});
 
 	return interaction.editReply({ embeds: [settingsEmbed] });
@@ -161,7 +165,10 @@ module.exports = {
 		});
 
 		if (
-			!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR, true)
+			!interaction.memberPermissions.has(
+				PermissionsBitField.Flags.Administrator,
+				true
+			)
 		) {
 			return interaction.editReply({
 				embeds: [embed("❣️ **You don't have permission to manage settings.**")],

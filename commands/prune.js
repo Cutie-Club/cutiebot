@@ -1,4 +1,4 @@
-const { Permissions } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 
@@ -33,8 +33,8 @@ module.exports = {
 		});
 
 		if (
-			!interaction.member.permissions.has(
-				Permissions.FLAGS.MANAGE_MESSAGES,
+			!interaction.memberPermissions.has(
+				PermissionsBitField.Flags.ManageMessages,
 				true
 			)
 		) {
@@ -49,8 +49,8 @@ module.exports = {
 
 		if (
 			!interaction.channel
-				.permissionsFor(interaction.guild.me)
-				.has('MANAGE_MESSAGES', false)
+				.permissionsFor(interaction.guild.members.me)
+				.has(PermissionsBitField.Flags.ManageMessages, false)
 		) {
 			return await interaction.editReply({
 				embeds: [

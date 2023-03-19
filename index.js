@@ -5,7 +5,12 @@ loggerInit();
 log.time('startup');
 log.info('Starting Cutiebot!');
 
-const { Client, Collection, Intents } = require('discord.js');
+const {
+	Client,
+	Collection,
+	GatewayIntentBits,
+	Partials,
+} = require('discord.js');
 const token = process.env.DISCORD_TOKEN;
 
 if (!token) {
@@ -17,12 +22,12 @@ if (!token) {
 
 const client = new Client({
 	intents: [
-		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_MEMBERS,
-		Intents.FLAGS.GUILD_MESSAGES,
-		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		Intents.FLAGS.DIRECT_MESSAGES,
-		Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.DirectMessageReactions,
 	],
 });
 

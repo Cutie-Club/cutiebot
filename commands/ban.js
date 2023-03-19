@@ -1,4 +1,4 @@
-const { Permissions } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 
@@ -34,7 +34,10 @@ module.exports = {
 		});
 
 		if (
-			!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS, true)
+			!interaction.memberPermissions.has(
+				PermissionsBitField.Flags.BanMembers,
+				true
+			)
 		) {
 			return await interaction.editReply({
 				embeds: [embed("❣️ **You don't have permission to ban users.**")],
@@ -43,7 +46,7 @@ module.exports = {
 
 		if (
 			!interaction.channel
-				.permissionsFor(interaction.guild.me)
+				.permissionsFor(interaction.guild.members.me)
 				.has('BAN_MEMBERS', false)
 		) {
 			return await interaction.editReply({
@@ -73,9 +76,16 @@ module.exports = {
 			);
 			interaction.editReply({
 				embeds: [
-					embed(`💖 **Banned ${user}.** 🔨`)
-						.addField('Reason', reason || 'No reason provided.')
-						.addField('Days of messages deleted', days || 'None.'),
+					embed(`💖 **Banned ${user}.** 🔨`).addFields(
+						{
+							name: 'Reason',
+							value: reason || 'No reason provided.',
+						},
+						{
+							name: 'Days of messages deleted',
+							value: days || 'None.',
+						}
+					),
 				],
 			});
 		} catch (err) {

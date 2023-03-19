@@ -53,7 +53,7 @@ module.exports = {
 
 			switch (data.type) {
 				case 'single':
-					jokeEmbed.addField('Joke', data.joke);
+					jokeEmbed.addFields({ name: 'Joke', value: data.joke });
 					break;
 				case 'twopart':
 					jokeEmbed.addFields([
@@ -77,7 +77,7 @@ module.exports = {
 			let errorEmbed = embed(errorReply);
 
 			if (error.cause) {
-				errorEmbed.addField('Cause:', error.cause);
+				errorEmbed.addFields({ name: 'Cause:', value: error.cause });
 			}
 
 			await interaction.editReply({
