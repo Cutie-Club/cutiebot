@@ -16,16 +16,23 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.reply({
 			embeds: [
-				embed('🖨️ **Printing Metadata...**')
-					.addField(
-						'Git SHA',
-						`Built from [\`${gitSha.substring(
+				embed('🖨️ **Printing Metadata...**').addFields(
+					{
+						name: 'Git SHA',
+						value: `Built from [\`${gitSha.substring(
 							0,
 							8
-						)}\`](https://github.com/Cutie-Club/cutiebot/commit/${gitSha})`
-					)
-					.addField('Commit message', `\`\`\`text\n${commitMessage}\n\`\`\``)
-					.addField('Uptime', uptimeString()),
+						)}\`](https://github.com/Cutie-Club/cutiebot/commit/${gitSha})`,
+					},
+					{
+						name: 'Commit message',
+						value: `\`\`\`text\n${commitMessage}\n\`\`\``,
+					},
+					{
+						name: 'Uptime',
+						value: uptimeString(),
+					}
+				),
 			],
 			ephemeral: true,
 		});

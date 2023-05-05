@@ -1,6 +1,6 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = (text) => {
-	let embed = new MessageEmbed().setColor('#36393f').setDescription(text);
+	let embed = new EmbedBuilder().setColor('#36393f').setDescription(text);
 	return embed;
 };

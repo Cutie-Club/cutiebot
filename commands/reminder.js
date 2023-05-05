@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, ChannelType } = require('discord.js');
 const reminders = require('../utils/reminders.js');
 const embed = require('../utils/embed.js');
 const ms = require('ms');
@@ -45,10 +45,10 @@ const listReminders = async (interaction, validReminders) => {
 	);
 	validReminders.forEach((reminder) => {
 		const duration = ms(reminder.end_time - Date.now(), { long: true });
-		reminderEmbed.addField(
-			`Reminder ${reminder.id}, in ${duration}`,
-			reminder.message
-		);
+		reminderEmbed.setFields({
+			name: `Reminder ${reminder.id}, in ${duration}`,
+			value: reminder.message,
+		});
 	});
 
 	return await interaction.editReply({
@@ -88,7 +88,10 @@ const clearReminder = async (interaction, validReminders) => {
 	validReminders.forEach(({ id }) => {
 		let result = reminders.killReminder(id, interaction.user.id);
 		if (!result)
-			clearEmbed.addField(`**Reminder ${id}**`, 'Could not be cleared.');
+			clearEmbed.setFields({
+				name: `**Reminder ${id}**`,
+				value: 'Could not be cleared.',
+			});
 	});
 
 	return interaction.editReply({
@@ -135,8 +138,9 @@ module.exports = {
 			ephemeral: true,
 		});
 
-		let guildId = 'DM';
-		if (interaction.channel.type !== 'DM') guildId = interaction.guild.id;
+		let guildId = ChannelType.DM;
+		if (interaction.channel.type !== ChannelType.DM)
+			guildId = interaction.guild.id;
 
 		const userReminders = reminders.getReminders(interaction.user.id);
 

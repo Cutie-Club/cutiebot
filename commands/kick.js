@@ -1,4 +1,4 @@
-const { Permissions } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const embed = require('../utils/embed.js');
 
@@ -28,7 +28,10 @@ module.exports = {
 		});
 
 		if (
-			!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS, true)
+			!interaction.memberPermissions.has(
+				PermissionsBitField.Flags.KickMembers,
+				true
+			)
 		) {
 			return await interaction.editReply({
 				embeds: [embed("❣️ **You don't have permission to kick users.**")],
@@ -37,7 +40,7 @@ module.exports = {
 
 		if (
 			!interaction.channel
-				.permissionsFor(interaction.guild.me)
+				.permissionsFor(interaction.guild.members.me)
 				.has('KICK_MEMBERS', false)
 		) {
 			return await interaction.editReply({
@@ -56,10 +59,10 @@ module.exports = {
 			);
 			interaction.editReply({
 				embeds: [
-					embed(`💖 **Kicked ${user}.** 👟`).addField(
-						'Reason',
-						reason || 'No reason provided.'
-					),
+					embed(`💖 **Kicked ${user}.** 👟`).addFields({
+						name: 'Reason',
+						value: reason || 'No reason provided.',
+					}),
 				],
 			});
 		} catch (err) {

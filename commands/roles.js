@@ -12,19 +12,22 @@ const viewRoles = async (interaction, guildSettings) => {
 		isAssignableRole(role, guildSettings)
 	);
 
-	rolesEmbed.addField(
-		`Roles in ${interaction.guild.name}:`,
-		assignableRoles.join('\n')
-	);
+	rolesEmbed.addFields({
+		name: `Roles in ${interaction.guild.name}:`,
+		value: assignableRoles.join('\n'),
+	});
 
 	const unmanagedUserRoles = Array.from(
 		interaction.member.roles.cache.values()
 	).filter((role) => !isManagedRole(role));
 
 	if (unmanagedUserRoles.length) {
-		rolesEmbed.addField('Your roles:', `${unmanagedUserRoles.join(', ')}`);
+		rolesEmbed.addFields({
+			name: 'Your roles:',
+			value: `${unmanagedUserRoles.join(', ')}`,
+		});
 	} else {
-		rolesEmbed.addField("You don't have any assigned roles.");
+		rolesEmbed.addFields("You don't have any assigned roles.");
 	}
 
 	await interaction.editReply({ embeds: [rolesEmbed] });
@@ -159,7 +162,7 @@ module.exports = {
 
 		if (
 			!interaction.channel
-				.permissionsFor(interaction.guild.me)
+				.permissionsFor(interaction.guild.members.me)
 				.has('MANAGE_ROLES', false)
 		) {
 			return interaction.editReply({

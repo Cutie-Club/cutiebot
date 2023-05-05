@@ -1,3 +1,4 @@
+const { ChannelType } = require('discord.js');
 const db = require('../utils/database.js');
 const embed = require('../utils/embed.js');
 
@@ -40,8 +41,8 @@ module.exports = {
 		let reminderID = id;
 		if (reminderID === undefined) {
 			// if no id is supplied add to database in turn generating one
-			let guildID = 'DM';
-			if (channel.type !== 'DM') guildID = guild.id;
+			let guildID = ChannelType.DM;
+			if (channel.type !== ChannelType.DM) guildID = guild.id;
 			const startTime = Date.now();
 			const endTime = startTime + duration;
 			reminderID = createReminder.run(
